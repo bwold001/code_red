@@ -83,7 +83,7 @@ button:hover {
 </style>
 <body>
 
-<form id="regForm" action="/action_page.php">
+<form id="regForm" action="action_page.php" method='post'>
   <h1>Please Enter Patient's Information:</h1>
   <!-- One "tab" for each step in the form: -->
   <div class="tab">
@@ -95,7 +95,7 @@ button:hover {
 	<p><input placeholder="Age" oninput="this.className = ''" name="age"></p>
 	<br>
 	Gender: 
-	<p><input type="radio" name="gender" value="male"> Male<br></p>
+	<p><input type="radio" name="male" value="male"> Male<br></p>
 	<p><input type="radio" name="female" value="female"> Female<br></p>
 	<br>
 	<hr>
@@ -103,13 +103,14 @@ button:hover {
 	<p><input type="radio" name="married" value="married"> Married<br></p>
 	<p><input type="radio" name="widowed" value="widowed"> Widowed<br></p>
   </div>
+  
   <div class="tab">
     Admission Type:
     <p><input type="radio" name="elective" value="elective"> Elective<br></p>
 	<p><input type="radio" name="emergency" value="emergency"> Emergency<br></p>
 	<hr>
 	Encounters:
-	<p><input type="checkbox" name="married" value="married"> Check if patient has problems breathing<br></p>
+	<p><input type="checkbox" name="breathing" value="breathing"> Check if patient has problems breathing<br></p>
 	<hr>
 	Check If Patient Uses:
     <p><input type="checkbox" name="tobacco" value="tobacco">Tobacco<br></p>
@@ -128,8 +129,8 @@ button:hover {
 	<p><input placeholder="Three Months" oninput="this.className = ''" name="3_month_emergency"></p>
 	<p><input placeholder="Six Months" oninput="this.className = ''" name="6_month_emergency"></p>
 	<p><input placeholder="Year" oninput="this.className = ''" name="12_month_emergency"></p>
-	
   </div>
+  
   <div class="tab">
     Check If Patient's Doctor Specializes in:
     <p><input type="checkbox" name="specialty_obstetrics_gynecology" value="specialty_obstetrics_gynecology">Obstetrics And Gynaecology<br></p>
@@ -156,13 +157,85 @@ button:hover {
 	<p><input type="checkbox" name="hcup_category_ot_compl_bir" value="hcup_category_ot_compl_bir">Birth Complications<br></p>
 	<p><input type="checkbox" name="hcup_category_oth_low_resp" value="hcup_category_oth_low_resp">Lower Respiratory Disease<br></p>
 	<p><input type="checkbox" name="hcup_category_septicemia" value="hcup_category_septicemia">Septicemia<br></p>
-	
+  </div>
+  
+  <div class="tab">
+    Check If Patient Has Received The Following Procedures In The Given Clinical Classifications Software (CCS) Category:
+    <p><input type="checkbox" name="px_ot_asst_del" value="px_ot_asst_del">Asst Del</p>
+	<p><input type="checkbox" name="px_hemodialysis" value="px_hemodialysis">Hemodialysis</p>
+	<p><input type="checkbox" name="px_ob_lacerat" value="px_ob_lacerat">Obstetric Laceration of Cervix</p>
+	<p><input type="checkbox" name="px_blood_transf" value="px_blood_transf">Blood Transfusion</p>
+	<p><input type="checkbox" name="px_c_section" value="px_c_section">C-section</p>
+	<p><input type="checkbox" name="px_ot_vasc_cath" value="px_ot_vasc_cath">Vas Cath</p>
+	<p><input type="checkbox" name="px_ca_chemorx" value="px_ca_chemorx">Cancer Chemotherapy</p>
+    <hr>
+	Vitals
+	<p><input placeholder="Pulse" oninput="this.className = ''" name="pulse"></p>
+	<hr>
+    Lab Results:
+    <p><input placeholder="Total Number of Lab Tests Performed" oninput="this.className = ''" name="num_total_results"></p>
+    <p><input placeholder="Total Number of Lab Tests That Returned 'Abnormal'" oninput="this.className = ''" name="num_abnormal_results"></p>
+    <p><input placeholder="Laboratory Values Component Of The Tabak Mortality Score" oninput="this.className = ''" name="tabak_lab_score"></p>
+    <p><input placeholder="Most Recent Albumin Level in g/dL" oninput="this.className = ''" name="tabak_very_low_albumin"></p>
+    <p><input placeholder="Most Recent PT INR Result" oninput="this.className = ''" name="tabak_high_pt_inr"></p>
+    <p><input placeholder="Most Recent BUN Level in mg/dL" oninput="this.className = ''" name="tabak_high_bun"></p>
+    <p><input placeholder="Most Recent Blood Sodium Level in mEg/dL" oninput="this.className = ''" name="hosp_low_sodium"></p>
+    <p><input placeholder="Most Recent Hemoglobin Result" oninput="this.className = ''" name="hosp_low_hemoglobin"></p>
+    <p><input placeholder="Most Recent Total Bilirubin Level in mg/dL" oninput="this.className = ''" name="tabak_high_bilirubin"></p>
+    <p><input placeholder="Most Recent Troponin I Level in ng/mL" oninput="this.className = ''" name="tabak_high_troponin_or_ckmb"></p>
+    <p><input placeholder="Most Recent CKMB Level in ng/mL" oninput="this.className = ''" name="tabak_high_troponin_ckmb"></p>
+    <p><input placeholder="Most Recent Albumin Level in g/dL" oninput="this.className = ''" name="tabak_low_albumin"></p>
+    <p><input placeholder="Most Recent Arterial PCO2 Result in mm Hg" oninput="this.className = ''" name="tabak_abnormal_pco2"></p>
+    <hr>
+    Comorbodities:
+    <p><input placeholder="Charlson Comorbidity Index (CCI)" oninput="this.className = ''" name="charlson_index"></p>
+    Check If Patient Has The Given Comorbid Condition:
+	<p><input type="checkbox" name="comor_ren" value="comor_ren">Renal Disease</p>
+	<p><input type="checkbox" name="comor_chf" value="comor_chf">CHF</p>
+	<p><input type="checkbox" name="comor_cpd" value="comor_cpd">Chronic Pulmonary Disorder</p>
+	<p><input type="checkbox" name="comor_mdm" value="comor_mdm">MDM</p>
+	<p><input type="checkbox" name="comor_sdm" value="comor_sdm">SDM</p>
+	<p><input type="checkbox" name="comor_mal" value="comor_mal">Malnutrition/ Weight Loss</p>
+	<p><input type="checkbox" name="comor_mld" value="comor_mld">MLD</p>
+	<p><input type="checkbox" name="comor_mst" value="comor_mst">MST</p>
+	<p><input type="checkbox" name="comor_pvr" value="comor_pvr">PVR</p>
+	<p><input type="checkbox" name="comor_mi" value="comor_mi">Malignancies</p>
+	<p><input type="checkbox" name="comor_sld" value="comor_sld">SLD</p>
+  </div>
+   
+  <div class="tab">
+    Medications:
+    <p><input placeholder="Number Of Inpatient Medications Given To Patient" oninput="this.className = ''" name="inp_num_meds"></p>
+	<p><input placeholder="Number Of Unique Medication Categories Among Inpatient Medications Given To Patient" oninput="this.className = ''" name="inp_num_unique_meds"></p>
+	Check If Patient Was Given Any Medications in the Given Category In An Inpatient Setting:
+	<p><input type="checkbox" name="inp_med_diuretics" value="inp_med_diuretics">Diuretic</p>
+	<p><input type="checkbox" name="inp_med_minerals_&_electrolytes" value="inp_med_minerals_&_electrolytes">Minerals & Electrolytes</p>
+	<p><input type="checkbox" name="inp_med_antiasthmatic" value="inp_med_antiasthmatic">Antiasthmatic</p>
+	<p><input type="checkbox" name="inp_med_corticosteroids" value="inp_med_corticosteroids">Corticosteroids</p>
+	<p><input type="checkbox" name="inp_med_anticoagulants" value="inp_med_anticoagulants">Aanticoagulants</p>
+	<p><input type="checkbox" name="inp_med_misc._antiinfectives" value="inp_med_misc._antiinfectives">Miscellaneous Antiinfectives</p>
+	<p><input type="checkbox" name="inp_med_antidiabetic" value="inp_med_antidiabetic">Antidiabetic</p>
+	<p><input type="checkbox" name="inp_med_assorted_classes" value="inp_med_assorted_classes">Assorted Classes</p>
+	<p><input type="checkbox" name="inp_med_hematopoietic_agents" value="inp_med_hematopoietic_agents">Hematopoietic Agents</p>
+	<p><input type="checkbox" name="inp_med_nutrients" value="inp_med_nutrients">Nutrients</p>
+	<p><input type="checkbox" name="inp_dea_class_C-II" value="inp_dea_class_C-II">Schedule 2 Drugs</p>
+	<p><input type="checkbox" name="inp_med_fluoroquinolones" value="inp_med_fluoroquinolones">Fluoroquinolones</p>
+	<p><input type="checkbox" name="inp_med_analgesics-narcotic" value="inp_med_analgesics-narcotic">Analgesic Narcotics</p>
+	Check If Patient Was Given Any Medications in the Given Category In An Outpatient Setting:
+	<p><input type="checkbox" name="med_anti-rheumatic" value="med_anti-rheumatic">Antirheumatic</p>
+    <hr>
+    Discharge:
+	<p><input placeholder="Number Of Days Of Patient's Current Hospital Stay" oninput="this.className = ''" name="length_of_stay"></p>
+	Select Discharge Time:
+	<p><input type="radio" name="disch_time_cat_morning" value="disch_time_cat_morning">Morning</p>
+	<p><input type="radio" name="disch_time_cat_afternoon" value="disch_time_cat_afternoon">Afternoon</p>
+	Select Discharge Location:
+	<p><input type="radio" name="disch_location_cat_home_no_service" value="disch_location_cat_home_no_service">Home Under Care Of Organized Home Health Service</p>
+	<p><input type="radio" name="disch_location_cat_snf" value="disch_location_cat_snf">Skilled Nursing Facility</p>
+	<p><input type="radio" name="disch_location_cat_home_health" value="disch_location_cat_home_health">Home/ Self Care</p>
+  </div>
 
-  </div>
-  <div class="tab">Login Info:
-    <p><input placeholder="Username..." oninput="this.className = ''" name="uname"></p>
-    <p><input placeholder="Password..." oninput="this.className = ''" name="pword" type="password"></p>
-  </div>
+  
   <div style="overflow:auto;">
     <div style="float:right;">
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
@@ -175,6 +248,7 @@ button:hover {
     <span class="step"></span>
     <span class="step"></span>
     <span class="step"></span>
+	<span class="step"></span>
   </div>
 </form>
 
@@ -193,7 +267,7 @@ function showTab(n) {
     document.getElementById("prevBtn").style.display = "inline";
   }
   if (n == (x.length - 1)) {
-    document.getElementById("nextBtn").innerHTML = "Submit";
+    document.getElementById("nextBtn").innerHTML = "Predict Readmission";
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
   }
