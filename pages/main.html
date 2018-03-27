@@ -6,11 +6,9 @@
 * {
   box-sizing: border-box;
 }
-
 body {
   background-color: #ff6666;
 }
-
 #regForm {
   background-color: #ffffff;
   margin: 100px auto;
@@ -19,11 +17,9 @@ body {
   width: 70%;
   min-width: 300px;
 }
-
 h1 {
   text-align: center;  
 }
-
 input {
   padding: 10px;
   width: 100%;
@@ -31,17 +27,14 @@ input {
   font-family: Raleway;
   border: 1px solid #aaaaaa;
 }
-
 /* Mark input boxes that gets an error on validation: */
 input.invalid {
   background-color: #ffdddd;
 }
-
 /* Hide all steps by default: */
 .tab {
   display: none;
 }
-
 button {
   background-color: #000000;
   color: #ffffff;
@@ -51,15 +44,12 @@ button {
   font-family: Raleway;
   cursor: pointer;
 }
-
 button:hover {
   opacity: 0.8;
 }
-
 #prevBtn {
   background-color: #bbbbbb;
 }
-
 /* Make circles that indicate the steps of the form: */
 .step {
   height: 15px;
@@ -71,11 +61,9 @@ button:hover {
   display: inline-block;
   opacity: 0.5;
 }
-
 .step.active {
   opacity: 1;
 }
-
 /* Mark the steps that are finished and valid: */
 .step.finish {
   background-color: #4CAF50;
@@ -92,8 +80,8 @@ button:hover {
   <br>
   <br>
     <div>
-      <button type="button" id="signin" onclick="nextPrev(-1)">Sign In</button>
-      <button type="button" id="signup" onclick="nextPrev(1)">Sign Up</button>
+      <button type="button" id="signin" onclick="location.href = 'user_signin.html'">Sign In</button>
+      <button type="button" id="signup" onclick="location.href = 'user_signup.html'">Sign Up</button>
     </div>
   </div>
   <!-- Circles which indicates the steps of the form: -->
@@ -122,7 +110,6 @@ function validateForm() {
   }
   return valid; // return the valid status
 }
-
 </script>
 
 </body>
