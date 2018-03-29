@@ -6,4 +6,5 @@ with h5py.File('model/model_100.h5','r') as hdf:
     print(ls)
     data = hdf.get('dense_31')
     dataset1 = np.array(data)
+    print (dataset1)
     print (dataset1.shape)
