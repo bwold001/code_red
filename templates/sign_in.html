@@ -31,10 +31,6 @@ input {
 input.invalid {
   background-color: #ffdddd;
 }
-/* Hide all steps by default: */
-.tab {
-  display: none;
-}
 button {
   background-color: #000000;
   color: #ffffff;
@@ -43,33 +39,30 @@ button {
   font-size: 17px;
   font-family: Raleway;
   cursor: pointer;
+  text-align: center;
 }
 button:hover {
   opacity: 0.8;
 }
-
-
 </style>
 <body>
 
-<form id="regForm" action="/" method="post">
-    <center> <img src= "logo2.png" height="200" width="200"></center>
-  <h1 >Welcome To Whabi</h1>
-  <div>	
+<form id="regForm" action="/sign_in" method="post">
+  <h1>Please Enter Your Login Information:</h1>
+
+   <div>
+    <p><input placeholder="Email" name="email" type="email" required></p>
+    <p><input placeholder="Password" name="password" type="password" required></p>
+   </div>
   <div style="overflow:auto;">
-  <hr>
-  <br>
-  <br>
-    <div>
-      <button type="submit" value="sign_in" name="sign_in"id="signin">Sign In</button>
-      <button type="submit" value="sign_up" name = "sign_up" id="signup">Sign Up</button>
-      {%if success%}<p>Successfully Registered</p>{%endif%}
+    <div style="float:right;">
+      <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
+      <button type="submit" class="button" value="sign_in" name="sign_in" >Sign In</button>
+	  {%if wrong_pass%}<p>Incorrect Password</p>{%endif%}
     </div>
   </div>
-
 
 </form>
 
 </body>
 </html>
-

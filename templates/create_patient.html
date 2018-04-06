@@ -83,63 +83,37 @@ button:hover {
 </style>
 <body>
 
-<form id="regForm" action="/action_page.php">
+<form id="regForm" action="/create_patient" method="post">
   <h1>Please Enter Patients Information:</h1>
-  <!-- One "tab" for each step in the form: -->
   <div>
-    <p><input placeholder="First name" oninput="this.className = ''" name="fname"></p>
-    <p><input placeholder="Last name" oninput="this.className = ''" name="lname"></p>
+    <p><input placeholder="First name" name="fname" type="text" required></p>
+    <p><input placeholder="Last name" name="lname" type="text" required></p>
+	<p><input placeholder="Email" name="email" type="email" required></p>
 	<h3>Gender</h3>
-	<input type="radio" name="gender" value="male"> Male<br>
-	<input type="radio" name="gender" value="female"> Female<br>
-	<p><input placeholder="Age" oninput="this.className = ''" name="password"></p>
+	<input type="radio" name="gender" value="male" required> Male<br>
+	<input type="radio" name="gender" value="female">  Female<br>
+	<p><input placeholder="Age" name="age" type="number" ></p>
+	<p><input placeholder="Phone Number" name="phone_number" type="tel"></p>
 	<h3>Race/Ethnicity</h3>
-    <input type="radio" name="race" value="White"> White<br>
+    <input type="radio" name="race" value="White" required> White<br>
 	<input type="radio" name="race" value="Black/African American"> Black/African American<br>
 	<input type="radio" name="race" value="Hispanic/Latino"> Hispanic/Latino<br>
 	<input type="radio" name="race" value="Asain"> Asain<br>
 	<input type="radio" name="race" value="Native American"> Native American<br>
-	<p><input placeholder="Phone Number" oninput="this.className = ''" name="phone_number"></p>
+	<input type="radio" name="race" value="Other"> Other<br>
+	
 </div>
 
   <div style="overflow:auto;">
     <div style="float:right;">
-      <button type="button" id="prevBtn" onclick="location.href = 'home.html'">Back</button>
-      <button type="button" id="addp" >Add Patient</button>
+      <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
+      <button type="submit" class="button" value="create_patient" name="create_patient">Create Patient</button>
+	  {%if exist%}<p>A Patient With That Email Exists.</p>{%endif%}
     </div>
   </div>
-  <!-- Circles which indicates the steps of the form: -->
+
 
 </form>
-
-<script>
-document.getElementById("addp").onclick = function () {
-        location.href = "add_patient.html";
-		alert("Patient added successfully");
-    };
-function validateForm() {
-  // This function deals with validation of the form fields
-  var x, y, i, valid = true;
-  x = document.getElementsByClassName("tab");
-  y = x[currentTab].getElementsByTagName("input");
-  // A loop that checks every input field in the current tab:
-  for (i = 0; i < y.length; i++) {
-    // If a field is empty...
-    if (y[i].value == "") {
-      // add an "invalid" class to the field:
-      y[i].className += " invalid";
-      // and set the current valid status to false
-      valid = false;
-    }
-  }
-  // If the valid status is true, mark the step as finished and valid:
-  if (valid) {
-    document.getElementsByClassName("step")[currentTab].className += " finish";
-  }
-  return valid; // return the valid status
-}
-
-</script>
 
 </body>
 </html>

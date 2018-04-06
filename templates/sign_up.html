@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  background-color: #ff6666;
+}
+#regForm {
+  background-color: #ffffff;
+  margin: 100px auto;
+  font-family: Raleway;
+  padding: 40px;
+  width: 70%;
+  min-width: 300px;
+}
+h1 {
+  text-align: center;  
+}
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+button {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.8;
+}
+
+
+</style>
+<body>
+
+<form id="regForm" action="/sign_up" method="post">
+  <h1>Please Enter Your Information:</h1>
+  <div>
+    <p><input placeholder="First name" name="fname" type="text" id = "fname" required></p>
+    <p><input placeholder="Last name" name="lname" type="text" id = "lname" required></p>
+	<p><input placeholder="Work e-mail"  name="email" type="email" id = "email" required></p>
+    <p><input placeholder="Work Phone Number"  name="phone_number" type="tel" id = "phone_number" required></p>
+	<p><input placeholder="Password"  name="password" type="password" id = "password" required></p>
+    <p><input placeholder="Confirm Password"  name="confirm_password" type="password" id = "confirm_password" required></p>
+	
+  <div style="overflow:auto;">
+    <div style="float:right;">
+      <button type="submit" class="button" value="back" name="back" formnovalidate>Back</button>
+      <button type="submit" class="button" value = "sign_up" name="sign_up">Sign Up</button>
+      {%if nomatch%}<p>Passwords Don't Match</p>{%endif%}
+	  {%if exist%}<p>A User With That Email Exists.</p>{%endif%}
+    </div>
+  </div>
+
+</form>
+
+
+</body>
+</html>      
+            
+
