@@ -91,15 +91,16 @@ button:hover {
 	<p>Date Created:<input name="time_created" type="text" value ="{{time_created}}"readonly></p>
 	<hr>
 	<br>
-    <p>First Name: <input name="fname" type="text" value ="{{fname}}"required></p>
-    <p>Last Name: <input name="lname" type="text" value ="{{lname}}"required></p>
+    <p>First Name: <input name="fname" type="text" value ="{{fname}}"required readonly></p>
+    <p>Last Name: <input name="lname" type="text" value ="{{lname}}"required readonly></p>
 	Gender
 	<input type="radio" name="gender" value="male" {%if gender == 'male'%} checked='check' {%endif%}required readonly> Male<br>
 	<input type="radio" name="gender" value="female" {%if gender == 'female'%} checked='check' {%endif%}readonly>  Female<br>
 	<p>Age: <input name="age" type="number" value="{{age}}" readonly></p>
 	Martial Status: 
-	<p><input type="radio" name="martial_status" value="married"> Married<br></p>
+	<p><input type="radio" name="martial_status" value="married" required> Married<br></p>
 	<p><input type="radio" name="martial_status" value="widowed"> Widowed<br></p>
+	<p><input type="radio" name="martial_status" value="neither"> Niether<br></p>
   </div>
   
   <div class="tab">
@@ -108,7 +109,7 @@ button:hover {
 	<p><input type="radio" name="admission_type" value="emergency"> Emergency<br></p>
 	<hr>
 	Encounters:
-	<p><input type="checkbox" name="breathing_problems" value="breathing"> Check if patient has problems breathing<br></p>
+	<p><input type="checkbox" name="breathing_problems" value="breathing_problems"> Check if patient has problems breathing<br></p>
 	<hr>
 	Check If Patient Uses:
     <p><input type="checkbox" name="patient_uses" value="tobacco">Tobacco<br></p>
@@ -129,77 +130,77 @@ button:hover {
 	<p><input placeholder="Year" name="twelve_month_emergency" value="twelve_month_emergency"  type="number" required></p>
   </div>
   
-  <!-- <div class="tab"> -->
-    <!-- Check If Patient's Doctor Specializes in: -->
-    <!-- <p><input type="checkbox" name="specialty_obstetrics_gynecology" value="specialty_obstetrics_gynecology">Obstetrics And Gynaecology<br></p> -->
-    <!-- <p><input type="checkbox" name="specialty_hospitalist_medical" value="specialty_hospitalist_medical">Medical Hospitalist<br></p> -->
-    <!-- <p><input type="checkbox" name="specialty_internal_medicine" value="specialty_internal_medicine">Internal Medicine<br></p> -->
-    <!-- <hr> -->
-	<!-- Enter Number of Different Hospital Problems Patient Has: -->
-	<!-- <p><input placeholder="Number of Hospital Problems" oninput="this.className = ''" name="hospital_problems_count"></p> -->
-	<!-- <hr> -->
-    <!-- Check If Patient Has The Following Hospital Problem in the Given Health Care and Utilization Project (HCUP) Category: -->
-    <!-- <p><input type="checkbox" name="hcup_category_chr_kidney_disease" value="hcup_category_chr_kidney_disease">Chronic Kidney Disease<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_nml_preg_del" value="hcup_category_nml_preg_del">Gestational Diabetes<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_chf_nonhp" value="hcup_category_chf_nonhp">Congestive Heart Failure<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_copd" value="hcup_category_copd"> Chronic Obstructive Pulmonary Disease<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_fluid_elc_dx" value="hcup_category_fluid_elc_dx">Nutrition Deficiency<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_anemia" value="hcup_category_anemia">Anemia/Blood Disorders<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_diabmel_w_cm" value="hcup_category_diabmel_w_cm">Diabetes Mellitus With Complications<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_diabmel_no_c" value="hcup_category_diabmel_no_c">Diabetes Mellitus Without Complications<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_dysrhythmia" value="hcup_category_dysrhythmia">Dysrhythmia<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_ac_renl_fail" value="hcup_category_ac_renl_fail">Acute Renal Failure<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_htn" value="hcup_category_htn">Hypertension<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_adlt_resp_fl" value="hcup_category_adlt_resp_fl">Adult Respiratory Failure<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_oth_liver_dx" value="hcup_category_oth_liver_dx">Liver Disorder<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_ot_compl_bir" value="hcup_category_ot_compl_bir">Birth Complications<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_oth_low_resp" value="hcup_category_oth_low_resp">Lower Respiratory Disease<br></p> -->
-	<!-- <p><input type="checkbox" name="hcup_category_septicemia" value="hcup_category_septicemia">Septicemia<br></p> -->
-  <!-- </div> -->
+  <div class="tab">
+    Check If Patient's Doctor Specializes in:
+    <p><input type="checkbox" name="speciality" value="ProviderExtractor__specialty_obstetrics_gynecology">Obstetrics And Gynaecology<br></p>
+    <p><input type="checkbox" name="speciality" value="ProviderExtractor__specialty_hospitalist_medical">Medical Hospitalist<br></p>
+    <p><input type="checkbox" name="speciality" value="ProviderExtractor__specialty_internal_medicine">Internal Medicine<br></p>
+    <hr>
+	Enter Number of Different Hospital Problems Patient Has:
+	<p><input placeholder="Number of Hospital Problems" name="hospital_problems_count" value="hospital_problems_count"type="number" required></p>
+	<hr>
+    Check If Patient Has The Following Hospital Problem in the Given Health Care and Utilization Project (HCUP) Category:
+    <p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_chr_kidney_disease">Chronic Kidney Disease<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_nml_preg_del">Gestational Diabetes<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_chf_nonhp">Congestive Heart Failure<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_copd"> Chronic Obstructive Pulmonary Disease<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_fluid_elc_dx">Nutrition Deficiency<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_anemia">Anemia/Blood Disorders<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_diabmel_w_cm">Diabetes Mellitus With Complications<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_diabmel_no_c">Diabetes Mellitus Without Complications<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_dysrhythmia">Dysrhythmia<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_ac_renl_fail">Acute Renal Failure<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_htn">Hypertension<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_adlt_resp_fl">Adult Respiratory Failure<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_oth_liver_dx">Liver Disorder<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_ot_compl_bir">Birth Complications<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_oth_low_resp">Lower Respiratory Disease<br></p>
+	<p><input type="checkbox" name="hcup_category" value="HospitalProblemsExtractor__hcup_category_septicemia">Septicemia<br></p>
+  </div>
   
-  <!-- <div class="tab"> -->
-    <!-- Check If Patient Has Received The Following Procedures In The Given Clinical Classifications Software (CCS) Category: -->
-    <!-- <p><input type="checkbox" name="px_ot_asst_del" value="px_ot_asst_del">Asst Del</p> -->
-	<!-- <p><input type="checkbox" name="px_hemodialysis" value="px_hemodialysis">Hemodialysis</p> -->
-	<!-- <p><input type="checkbox" name="px_ob_lacerat" value="px_ob_lacerat">Obstetric Laceration of Cervix</p> -->
-	<!-- <p><input type="checkbox" name="px_blood_transf" value="px_blood_transf">Blood Transfusion</p> -->
-	<!-- <p><input type="checkbox" name="px_c_section" value="px_c_section">C-section</p> -->
-	<!-- <p><input type="checkbox" name="px_ot_vasc_cath" value="px_ot_vasc_cath">Vas Cath</p> -->
-	<!-- <p><input type="checkbox" name="px_ca_chemorx" value="px_ca_chemorx">Cancer Chemotherapy</p> -->
-    <!-- <hr> -->
-	<!-- Vitals -->
-	<!-- <p><input placeholder="Pulse" oninput="this.className = ''" name="pulse"></p> -->
-	<!-- <hr> -->
-    <!-- Lab Results: -->
-    <!-- <p><input placeholder="Total Number of Lab Tests Performed" oninput="this.className = ''" name="num_total_results"></p> -->
-    <!-- <p><input placeholder="Total Number of Lab Tests That Returned 'Abnormal'" oninput="this.className = ''" name="num_abnormal_results"></p> -->
-    <!-- <p><input placeholder="Laboratory Values Component Of The Tabak Mortality Score" oninput="this.className = ''" name="tabak_lab_score"></p> -->
-    <!-- <p><input placeholder="Most Recent Albumin Level in g/dL" oninput="this.className = ''" name="tabak_very_low_albumin"></p> -->
-    <!-- <p><input placeholder="Most Recent PT INR Result" oninput="this.className = ''" name="tabak_high_pt_inr"></p> -->
-    <!-- <p><input placeholder="Most Recent BUN Level in mg/dL" oninput="this.className = ''" name="tabak_high_bun"></p> -->
-    <!-- <p><input placeholder="Most Recent Blood Sodium Level in mEg/dL" oninput="this.className = ''" name="hosp_low_sodium"></p> -->
-    <!-- <p><input placeholder="Most Recent Hemoglobin Result" oninput="this.className = ''" name="hosp_low_hemoglobin"></p> -->
-    <!-- <p><input placeholder="Most Recent Total Bilirubin Level in mg/dL" oninput="this.className = ''" name="tabak_high_bilirubin"></p> -->
-    <!-- <p><input placeholder="Most Recent Troponin I Level in ng/mL" oninput="this.className = ''" name="tabak_high_troponin_or_ckmb"></p> -->
-    <!-- <p><input placeholder="Most Recent CKMB Level in ng/mL" oninput="this.className = ''" name="tabak_high_troponin_ckmb"></p> -->
-    <!-- <p><input placeholder="Most Recent Albumin Level in g/dL" oninput="this.className = ''" name="tabak_low_albumin"></p> -->
-    <!-- <p><input placeholder="Most Recent Arterial PCO2 Result in mm Hg" oninput="this.className = ''" name="tabak_abnormal_pco2"></p> -->
-    <!-- <hr> -->
-    <!-- Comorbodities: -->
-    <!-- <p><input placeholder="Charlson Comorbidity Index (CCI)" oninput="this.className = ''" name="charlson_index"></p> -->
-    <!-- Check If Patient Has The Given Comorbid Condition: -->
-	<!-- <p><input type="checkbox" name="comor_ren" value="comor_ren">Renal Disease</p> -->
-	<!-- <p><input type="checkbox" name="comor_chf" value="comor_chf">CHF</p> -->
-	<!-- <p><input type="checkbox" name="comor_cpd" value="comor_cpd">Chronic Pulmonary Disorder</p> -->
-	<!-- <p><input type="checkbox" name="comor_mdm" value="comor_mdm">MDM</p> -->
-	<!-- <p><input type="checkbox" name="comor_sdm" value="comor_sdm">SDM</p> -->
-	<!-- <p><input type="checkbox" name="comor_mal" value="comor_mal">Malnutrition/ Weight Loss</p> -->
-	<!-- <p><input type="checkbox" name="comor_mld" value="comor_mld">MLD</p> -->
-	<!-- <p><input type="checkbox" name="comor_mst" value="comor_mst">MST</p> -->
-	<!-- <p><input type="checkbox" name="comor_pvr" value="comor_pvr">PVR</p> -->
-	<!-- <p><input type="checkbox" name="comor_mi" value="comor_mi">Malignancies</p> -->
-	<!-- <p><input type="checkbox" name="comor_sld" value="comor_sld">SLD</p> -->
-  <!-- </div> -->
+  <div class="tab">
+    Check If Patient Has Received The Following Procedures In The Given Clinical Classifications Software (CCS) Category:
+    <p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_ot_asst_del">Asst Del</p>
+	<p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_hemodialysis">Hemodialysis</p>
+	<p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_ob_lacerat">Obstetric Laceration of Cervix</p>
+	<p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_blood_transf">Blood Transfusion</p>
+	<p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_c_section">C-section</p>
+	<p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_ot_vasc_cath">Vas Cath</p>
+	<p><input type="checkbox" name="ccs_category" value="ProceduresExtractor__px_ca_chemorx">Cancer Chemotherapy</p>
+    <hr>
+	Vitals
+	<p><input placeholder="Pulse" name="pulse" value="pulse" type="number" required></p>
+	<hr>
+    Lab Results:
+    <p><input placeholder="Total Number of Lab Tests Performed" name="num_total_lab_results" value="num_total_lab_results" type="number" required></p>
+    <p><input placeholder="Total Number of Lab Tests That Returned 'Abnormal'"  name="num_abnormal_results" value="num_abnormal_results" type="number" required></p>
+    <p><input placeholder="Laboratory Values Component Of The Tabak Mortality Score" name="tabak_lab_score" value="tabak_lab_score" type="number" required></p>
+    <p><input placeholder="Most Recent Albumin Level in g/dL" name="tabak_very_low_albumin" value="tabak_very_low_albumin" type="number" required></p>
+    <p><input placeholder="Most Recent PT INR Result"  name="tabak_high_pt_inr" value="tabak_high_pt_inr" type="number" required></p>
+    <p><input placeholder="Most Recent BUN Level in mg/dL"  name="tabak_high_bun" value="tabak_high_bun" type="number" required></p>
+    <p><input placeholder="Most Recent Blood Sodium Level in mEg/dL"  name="hosp_low_sodium" value="hosp_low_sodium" type="number" required></p>
+    <p><input placeholder="Most Recent Hemoglobin Result"  name="hosp_low_hemoglobin" value="hosp_low_hemoglobin" type="number" required></p>
+    <p><input placeholder="Most Recent Total Bilirubin Level in mg/dL"  name="tabak_high_bilirubin"  value="tabak_high_bilirubin" type="number" required></p>
+    <p><input placeholder="Most Recent Troponin I Level in ng/mL"  name="tabak_high_troponin" value="tabak_high_troponin" type="number" required></p>
+    <p><input placeholder="Most Recent CKMB Level in ng/mL"  name="tabak_high_troponin_ckmb" value="tabak_high_troponin_ckmb" type="number" required></p>
+    <p><input placeholder="Most Recent Albumin Level in g/dL"  name="tabak_low_albumin" value="tabak_low_albumin" type="number" required></p>
+    <p><input placeholder="Most Recent Arterial PCO2 Result in mm Hg" name="tabak_abnormal_pco2" value="tabak_abnormal_pco2" type="number" required></p>
+    <hr>
+    Comorbodities:
+    <p><input placeholder="Charlson Comorbidity Index (CCI)" name="charlson_index" value="charlson_index" type="number" required ></p>
+    Check If Patient Has The Given Comorbid Condition:
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_ren">Renal Disease</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_chf">CHF</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_cpd">Chronic Pulmonary Disorder</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_mdm">MDM</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_sdm">SDM</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_mal">Malnutrition/ Weight Loss</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_mld">MLD</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_mst">MST</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_pvr">PVR</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_mi">Malignancies</p>
+	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_sld">SLD</p>
+  </div>
    
   <!-- <div class="tab"> -->
     <!-- Medications: -->

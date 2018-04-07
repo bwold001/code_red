@@ -2,11 +2,13 @@
 from flask import Flask, request, redirect, render_template
 import models as dbHandler
 import csv
+from collections import OrderedDict
+import time
 
 
 app = Flask(__name__)
 global patient_values
-patient_values = {}
+patient_values = OrderedDict()
 
 @app.route('/', methods=['POST','GET'])
 def main():
@@ -173,9 +175,11 @@ def select_patient():
 			email = request.form['email']
 			patient_info = dbHandler.getPatientInfo(email)
 			if len(patient_info) == 1:
-				patient_id = patient_info[0][0]
+				patient_id = patient_info[0][0]		
 				fname = patient_info[0][1]
 				lname = patient_info[0][2]
+				global patient_name
+				patient_name=lname
 				email = patient_info[0][3]
 				gender = patient_info[0][4]
 				age = patient_info[0][5]
@@ -196,18 +200,42 @@ def select_patient():
 @app.route('/get_prediction', methods=['POST', 'GET'])
 def get_prediction():
 	if request.method=='POST':
-		
+		#first tab in form
 		patient_id = request.form['patient_id']
 		fname = request.form['fname']
 		lname = request.form['lname']
 		gender = request.form['gender']
 		age = str(request.form['age'])
 		martial_status = request.form['martial_status']	
-		admission_type = request.form['admission_type']
-		breathing_problems = request.form['breathing_problems']	
-		patient_uses = request.form['patient_uses']
-		insurance = request.form['insurance']
 		
+		if int(age)>45:
+				t_age = int(age)-45
+		else:
+			t_age = 0		
+		patient_values['BasicDemographicsExtractor__tabak_age']=str(t_age)
+		patient_values['BasicDemographicsExtractor__age']=age
+		patient_values['BasicDemographicsExtractor__age^2']= str(int(age)**2)
+		patient_values['BasicDemographicsExtractor__age^3']=str(int(age)**3)		
+		if martial_status == 'married':
+			patient_values['BasicDemographicsExtractor__marital_status_cat_married']= 1
+			patient_values['BasicDemographicsExtractor__marital_status_cat_widowed']= 0
+		elif martial_status == 'widowed':
+			patient_values['BasicDemographicsExtractor__marital_status_cat_married']=0
+			patient_values['BasicDemographicsExtractor__marital_status_cat_widowed']=1
+		elif martial_status == 'neither':
+			patient_values['BasicDemographicsExtractor__marital_status_cat_married']=0
+			patient_values['BasicDemographicsExtractor__marital_status_cat_widowed']=0
+		if gender == 'female':
+			patient_values['BasicDemographicsExtractor__if_female_bool'] = 1
+		elif gender == 'male':
+			patient_values['BasicDemographicsExtractor__if_female_bool'] = 0
+		
+		
+		#second tab in form
+		admission_type = request.form['admission_type']
+		breathing_problems = request.form.getlist('breathing_problems')	
+		patient_uses = request.form.getlist('patient_uses')
+		insurance = request.form['insurance']
 		three_month_inpatient = str(request.form['three_month_inpatient'])
 		six_month_inpatient = str(request.form['six_month_inpatient'])
 		twelve_month_inpatient = str(request.form['twelve_month_inpatient'])
@@ -215,26 +243,164 @@ def get_prediction():
 		six_month_emergency = str(request.form['six_month_emergency'])
 		twelve_month_emergency = str(request.form['twelve_month_emergency'])
 		
-			
-		patient_values['BasicDemographicsExtractor__age']=age
-		patient_values['BasicDemographicsExtractor__age^2']= str(int(age)**2)
-		if int(age)>45:
-			t_age = int(age)-45
+		if admission_type == 'elective':
+			patient_values['AdmissionExtractor__admission_type_cat_elective']=1
+			patient_values['AdmissionExtractor__admission_type_cat_emergency']=0
+			patient_values['AdmissionExtractor__acuity_lace']=0
+		elif admission_type == 'emergency':
+			patient_values['AdmissionExtractor__admission_type_cat_elective']=0
+			patient_values['AdmissionExtractor__admission_type_cat_emergency']=1
+			patient_values['AdmissionExtractor__acuity_lace']=3			
+		patient_values['EncounterReasonExtractor__problem_breathing']=0
+		if len(breathing_problems) != 0:
+			patient_values['EncounterReasonExtractor__problem_breathing']=1				
+		if len(patient_uses) == 1:
+			if patient_uses == 'tobacco':
+				patient_values['HealthHistoryExtractor__tobacco_cat_quit']=0
+				patient_values['HealthHistoryExtractor__alcohol_cat_no']=1
+			elif patient_uses == 'alcohol':
+				patient_values['HealthHistoryExtractor__tobacco_cat_quit']=1
+				patient_values['HealthHistoryExtractor__alcohol_cat_no']=0
+		elif len(patient_uses) == 2 :
+			patient_values['HealthHistoryExtractor__tobacco_cat_quit']=0
+			patient_values['HealthHistoryExtractor__alcohol_cat_no']=0
+		elif len(patient_uses) == 0:
+			patient_values['HealthHistoryExtractor__tobacco_cat_quit']=1
+			patient_values['HealthHistoryExtractor__alcohol_cat_no']=1
+		if insurance == 'medicare':
+			patient_values['PayerExtractor__insurance_type_cat_medicare']=1
+			patient_values['PayerExtractor__insurance_type_cat_commercial']=0
+		elif insurance == 'commercial':
+			patient_values['PayerExtractor__insurance_type_cat_medicare']=0
+			patient_values['PayerExtractor__insurance_type_cat_commercial']=1		
+		patient_values['UtilizationExtractor__pre_6_month_inpatient']=six_month_inpatient
+		patient_values['UtilizationExtractor__pre_12_month_inpatient']=twelve_month_inpatient
+		patient_values['UtilizationExtractor__pre_3_month_inpatient']=three_month_inpatient
+		if int(six_month_emergency)< 4:
+			patient_values['UtilizationExtractor__er_visits_lace']=six_month_emergency
 		else:
-			t_age = 0
-		patient_values['BasicDemographicsExtractor__tabak_age']=str(t_age)
-		patient_values['BasicDemographicsExtractor__age^3']= str(int(age)**3)
-		if martial_status == 'married':
-			patient_values['BasicDemographicsExtractor__marital_status_cat_married']= '1'
-			patient_values['BasicDemographicsExtractor__marital_status_cat_widowed']= '0'
-		elif martial_status == 'widowed':
-			patient_values['BasicDemographicsExtractor__marital_status_cat_married']='0'
-			patient_values['BasicDemographicsExtractor__marital_status_cat_widowed']='1'
-		if gender == 'female':
-			 patient_values['BasicDemographicsExtractor__if_female_bool'] = '1'
-		elif gender == 'male':
-			patient_values['BasicDemographicsExtractor__if_female_bool'] = '0'
-			
+			patient_values['UtilizationExtractor__er_visits_lace']=4
+		patient_values['UtilizationExtractor__pre_6_month_emergency']=six_month_emergency
+		patient_values['UtilizationExtractor__pre_12_month_emergency']=twelve_month_emergency 
+		patient_values['UtilizationExtractor__pre_3_month_emergency']=three_month_emergency
+		
+		
+		#third tab in form
+		provider_speciality = request.form.getlist('speciality')
+		hospital_problems_count = request.form['hospital_problems_count']
+		hcup_category = request.form.getlist('hcup_category')
+		
+		patient_values['ProviderExtractor__specialty_obstetrics_gynecology']=0
+		patient_values['ProviderExtractor__specialty_hospitalist_medical']=0
+		patient_values['ProviderExtractor__specialty_internal_medicine']=0
+		for speciality in provider_speciality:
+			patient_values[speciality]=1		
+		patient_values['HospitalProblemsExtractor__hospital_problems_count']=hospital_problems_count		
+		patient_values['HospitalProblemsExtractor__hcup_category_chr_kidney_disease']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_nml_preg_del']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_chf_nonhp']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_copd']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_fluid_elc_dx']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_anemia']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_diabmel_w_cm']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_dysrhythmia']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_ac_renl_fail']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_htn']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_adlt_resp_fl']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_oth_liver_dx']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_ot_compl_bir']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_oth_low_resp']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_septicemia']=0
+		patient_values['HospitalProblemsExtractor__hcup_category_diabmel_no_c']=0
+		for problem in hcup_category:
+			patient_values[problem]=1
+		
+		#fourth tab in form
+		ccs_category = request.form.getlist('ccs_category')
+		pulse = request.form['pulse']
+		num_total_lab_results = request.form['num_total_lab_results']
+		num_abnormal_results = request.form['num_abnormal_results']
+		tabak_lab_score = request.form['tabak_lab_score']
+		tabak_very_low_albumin = request.form['tabak_very_low_albumin']
+		tabak_high_pt_inr = request.form['tabak_high_pt_inr']
+		tabak_high_bun = request.form['tabak_high_bun']
+		hosp_low_sodium = request.form['hosp_low_sodium']
+		hosp_low_hemoglobin = request.form['hosp_low_hemoglobin']
+		tabak_high_bilirubin = request.form['tabak_high_bilirubin']
+		#tabak_high_troponin_or_ckmb = request.form['tabak_high_troponin_or_ckmb']
+		tabak_high_troponin = request.form['tabak_high_troponin']		
+		tabak_high_troponin_ckmb = request.form['tabak_high_troponin_ckmb']
+		tabak_low_albumin = request.form['tabak_low_albumin']
+		tabak_abnormal_pco2 = request.form['tabak_abnormal_pco2']
+		charlson_index = request.form['charlson_index']
+		comorbid = request.form.getlist('comorbid')
+		
+		patient_values['ProceduresExtractor__px_ot_asst_del']=0
+		patient_values['ProceduresExtractor__px_hemodialysis']=0
+		patient_values['ProceduresExtractor__px_ob_lacerat']=0
+		patient_values['ProceduresExtractor__px_blood_transf']=0
+		patient_values['ProceduresExtractor__px_c_section']=0
+		patient_values['ProceduresExtractor__px_ot_vasc_cath']=0
+		patient_values['ProceduresExtractor__px_ca_chemorx']=0
+		for ccs in ccs_category:
+			patient_values[ccs]=1
+		patient_values['VitalsExtractor__pulse'] = pulse
+		patient_values['LabResultsExtractor__num_abnormal_results']=num_abnormal_results
+		patient_values['LabResultsExtractor__num_total_results']= num_total_lab_results
+		patient_values['LabResultsExtractor__tabak_lab_score']= tabak_lab_score		
+		patient_values['LabResultsExtractor__tabak_low_albumin']=0
+		patient_values['LabResultsExtractor__tabak_high_pt_inr']=0
+		patient_values['LabResultsExtractor__tabak_high_bun']=0
+		patient_values['LabResultsExtractor__hosp_low_sodium']=0
+		patient_values['LabResultsExtractor__pct_abnormal_results']= 0
+		patient_values['LabResultsExtractor__tabak_abnormal_sodium']=0
+		patient_values['LabResultsExtractor__tabak_very_high_bun']=0
+		patient_values['LabResultsExtractor__hosp_low_hemoglobin']=0
+		patient_values['LabResultsExtractor__tabak_high_bilirubin']=0
+		patient_values['LabResultsExtractor__tabak_high_troponin_or_ckmb']=0
+		patient_values['LabResultsExtractor__tabak_low_albumin']=0
+		patient_values['LabResultsExtractor__tabak_abnormal_pco2']=0		
+		if float(tabak_very_low_albumin) <= 2.4:
+			patient_values['LabResultsExtractor__tabak_low_albumin']=1
+		if float(tabak_high_pt_inr) > 1.2:	
+			patient_values['LabResultsExtractor__tabak_high_pt_inr']=0
+		patient_values['LabResultsExtractor__pct_abnormal_results']= (int(num_abnormal_results)/int(num_total_lab_results))*100
+		if 35 <= int(tabak_high_bun) <= 50:
+			patient_values['LabResultsExtractor__tabak_high_bun']=1
+		if int(hosp_low_sodium) <= 135:	
+			patient_values['LabResultsExtractor__hosp_low_sodium']=1
+		if 131 <= int(hosp_low_sodium) < 135 or int(hosp_low_sodium) > 145:
+			patient_values['LabResultsExtractor__tabak_abnormal_sodium']=1
+		if 51 <= int(tabak_high_bun) <= 70:
+			patient_values['LabResultsExtractor__tabak_very_high_bun']=1
+		if int(hosp_low_hemoglobin) < 12:
+			patient_values['LabResultsExtractor__hosp_low_hemoglobin']=1
+		if float(tabak_high_bilirubin) > 1.4:
+			patient_values['LabResultsExtractor__tabak_high_bilirubin']=1
+		if int (tabak_high_troponin) > 1 or int(tabak_high_troponin_ckmb) > 9:
+			patient_values['LabResultsExtractor__tabak_high_troponin_or_ckmb']=1
+		if 2.5 <= float (tabak_low_albumin) <= 2.7:
+			patient_values['LabResultsExtractor__tabak_low_albumin']=1
+		if 35 <= int(tabak_abnormal_pco2) or  int(tabak_abnormal_pco2)>= 60:
+			patient_values['LabResultsExtractor__tabak_abnormal_pco2']=1
+		
+		patient_values['ComorbiditiesExtractor__charlson_index']=charlson_index
+		patient_values['ComorbiditiesExtractor__charlson_index_lace']=charlson_index
+		patient_values['ComorbiditiesExtractor__comor_ren']=0
+		patient_values['ComorbiditiesExtractor__comor_chf']=0
+		patient_values['ComorbiditiesExtractor__comor_cpd']=0
+		patient_values['ComorbiditiesExtractor__comor_mdm']=0
+		patient_values['ComorbiditiesExtractor__comor_sdm']=0
+		patient_values['ComorbiditiesExtractor__comor_mal']=0
+		patient_values['ComorbiditiesExtractor__comor_mld']=0
+		patient_values['ComorbiditiesExtractor__comor_mst']=0
+		patient_values['ComorbiditiesExtractor__comor_pvr']=0
+		patient_values['ComorbiditiesExtractor__comor_mi']=0
+		patient_values['ComorbiditiesExtractor__comor_sld']=0
+		if charlson_index >=4:
+			patient_values['ComorbiditiesExtractor__charlson_index_lace']=5
+		for com in comorbid:
+			patient_values[com]=1
 		
 		with open('static/test.csv','wb') as f:
 			fieldnames = ['UtilizationExtractor__pre_6_month_inpatient','UtilizationExtractor__pre_12_month_inpatient','ComorbiditiesExtractor__charlson_index',
@@ -265,10 +431,16 @@ def get_prediction():
 			'HospitalProblemsExtractor__hcup_category_ot_compl_bir','LabResultsExtractor__tabak_abnormal_pco2','DischargeExtractor__disch_time_cat_morning','HospitalProblemsExtractor__hcup_category_oth_low_resp',
 			'BasicDemographicsExtractor__if_female_bool','HospitalProblemsExtractor__hcup_category_septicemia','HospitalProblemsExtractor__hcup_category_diabmel_no_c']
 
-			writer = csv.DictWriter(f, fieldnames=fieldnames,delimiter=',', quotechar='|')
-			writer.writeheader()
-			writer.writerow({'UtilizationExtractor__pre_6_month_inpatient': age})
-				
+			#writer = csv.DictWriter(f, fieldnames=fieldnames,delimiter=',', extrasaction='ignore', quotechar='|')
+			#writer.writeheader()
+			#writer.writerow(patient_values.values())
+			timestr = time.strftime("%Y%m%d-%H%M%S")
+			with open('static/'+patient_name+timestr+'prediction_data.csv','wb') as f:
+				w = csv.writer(f)
+				w.writerow(patient_values.keys())
+				w.writerow(patient_values.values())				
+			
+			
 		prediction_result = 9
 		return render_template("prediction_result.html", prediction_result=prediction_result)
 	else:
