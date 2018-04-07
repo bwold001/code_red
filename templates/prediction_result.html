@@ -56,28 +56,51 @@ button:hover {
   opacity: 0.8;
 }
 
+#prevBtn {
+  background-color: #bbbbbb;
+}
 
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;  
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #4CAF50;
+}
 </style>
 <body>
 
-<form id="regForm" action="/home" method="post" >
-  <h1>Welcome {%if user_name%}{{user_name}} {%endif%}</h1>
-  
-  <center><p>edit profile<p></center>
-    <center><p>logout<p></center>
-
-<div>	
+<form id="regForm" action="/save_prediction">
+  <h1>Results</h1>
+  <div>	
   <div style="overflow:auto;">
   <hr>
   <br>
   <br>
     <div>
-      <button type="submit" class="button" value="create_patient" name="create_patient" >Create Patient</button>
-      <button type="submit" class="button" value="search_patient" name="search_patient" >Patient Search</button>
-	  <button type="submit" class="button" value="patient_prediction" name="patient_prediction">Patient Prediction</button>
+      <h2>30-Day Readmission Prediction Score: {%if prediction_result%} {{prediction_result}} {%endif%}</h2>
     </div>
-	{%if success%}<p>Successfully Created Patient</p>{%endif%}
+	<div style="overflow:auto;">
+    <div >
+      <button type="button" id="back" >Back</button>
+      <button type="button" id="save">Save</button>
+    </div>
   </div>
+  </div>
+  <!-- Circles which indicates the steps of the form: -->
 
 </form>
 

@@ -51,7 +51,7 @@ button:hover {
   <h1>Please Enter Patient's Name To Search:</h1>
 
    <div>
-    <p><input placeholder="First Name" name="fname" type="text" required></p>
+    <p><input placeholder="Search By Email" name="email" type="text" required></p>
     	
    </div>
    
@@ -59,11 +59,36 @@ button:hover {
 	<div style="float:right;">
       <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
       <button type="submit" class="button" value="search_patient" name="search_patient">Search Patient</button>
-	  {%if noexist%}<p>No Patient Found With That Name</p>{%endif%}
+	  {%if noexist%}<p>No Patient Found With That Email</p>{%endif%}
 	</div>
   </div>
-
-
+  <br>
+  <hr>
+  
+  {%if recents%}
+  <div method="post">
+	<center><h2>Recently Added Patients:</h2></center>
+	
+	<table style="width:100%">
+	<tr>
+		<th>PATIENT ID</th>
+		<th>FIRST NAME</th>
+		<th>LAST NAME</th> 
+		<th>EMAIL</th>
+		<th>DATE CREATED</th>
+	</tr>
+	{%for recent in recents%}
+	<tr>
+		<td>{{recent[0]}}</td>
+		<td>{{recent[1]}}</td> 
+		<td>{{recent[2]}}</td> 
+		<td>{{recent[3]}}</td> 
+		<td>{{recent[-1]}}</td> 
+	</tr>
+	{%endfor%}	
+	</table>
+  <div>
+	{%endif%}
 </form>
 
 </body>

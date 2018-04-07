@@ -53,15 +53,17 @@ button:hover {
 <body>
 
 <form id="regForm" action="/sign_up" method="post">
+  
   <h1>Please Enter Your Information:</h1>
   <div>
     <p><input placeholder="First name" name="fname" type="text" id = "fname" required></p>
     <p><input placeholder="Last name" name="lname" type="text" id = "lname" required></p>
 	<p><input placeholder="Work e-mail"  name="email" type="email" id = "email" required></p>
-    <p><input placeholder="Work Phone Number"  name="phone_number" type="tel" id = "phone_number" required></p>
+    <p><input placeholder="Work Phone Number"  name="phone_number" type="number" id = "phone_number" required></p>
 	<p><input placeholder="Password"  name="password" type="password" id = "password" required></p>
     <p><input placeholder="Confirm Password"  name="confirm_password" type="password" id = "confirm_password" required></p>
-	
+  </div>
+
   <div style="overflow:auto;">
     <div style="float:right;">
       <button type="submit" class="button" value="back" name="back" formnovalidate>Back</button>

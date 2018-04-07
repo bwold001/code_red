@@ -84,9 +84,9 @@ button:hover {
 <body>
 
 <form id="regForm" action="/update_patient" method="post">
+  {%if patient_id%}
   <h1>Here You Can Edit A Patients Information:</h1>
-  <div>
-	{%if patient_id%}
+  <div>	
 	<p>Patient ID:<input name="patient_id" type="text" value ="{{patient_id}}"readonly></p>
 	<p>Date Created:<input name="time_created" type="text" value ="{{time_created}}"readonly></p>
 	<hr>
@@ -97,7 +97,7 @@ button:hover {
 	<h3>Gender</h3>
 	<input type="radio" name="gender" value="male" {%if gender == 'male'%} checked='check' {%endif%}required> Male<br>
 	<input type="radio" name="gender" value="female" {%if gender == 'female'%} checked='check' {%endif%}>  Female<br>
-	<p>Age: <input name="age" type="number" value="{{age}}"></p>
+	<p>Age: <input name="age" type="number" value="{{age}}" readonly></p>
 	<p>Phone Number: <input name="phone_number" type="tel" value="{{phone}}"></p>
 	<h3>Race/Ethnicity</h3>
     <input type="radio" name="race" value="White" {%if race == 'White'%} checked='check' {%endif%}required> White<br>
@@ -106,18 +106,20 @@ button:hover {
 	<input type="radio" name="race" value="Asain" {%if race == 'Asain'%} checked='check' {%endif%}> Asain<br>
 	<input type="radio" name="race" value="Native American" {%if race == 'Native American'%} checked='check' {%endif%}> Native American<br>
 	<input type="radio" name="race" value="Other" {%if race == 'Other'%} checked='check' {%endif%}> Other<br>
-	{%endif%}
+	
 	<hr>
 	<h3>Recent Predictions Found For Patient:</h3>
 	<p>{patient_predictions.txt}</p>
-	
+	{%endif%}
+	{%if success%}<p>Patient Information Successfully Updated.</p>{%endif%}
+	{%if error%}<p>Patient Not Updated.</p>{%endif%}
 </div>
   <div style="overflow:auto;">
     <div style="float:right;">
       <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
-      <button type="submit" class="button" value="update_patient" name="update_patient">Update</button>
-	  {%if sucess%}<p>Patient Information Successfully Updated.</p>{%endif%}
-	  {%if error%}<p>Patient Not Updated.</p>{%endif%}
+      
+	  <button {%if success%}style="display: none;"{%endif%} type="submit" class="button" value="update_patient" name="update_patient">Update</button>
+	  
     </div>
   </div>
 

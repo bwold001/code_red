@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  background-color: #ff6666;
+}
+#regForm {
+  background-color: #ffffff;
+  margin: 100px auto;
+  font-family: Raleway;
+  padding: 40px;
+  width: 70%;
+  min-width: 300px;
+}
+h1 {
+  text-align: center;  
+}
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+button {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+  text-align: center;
+}
+button:hover {
+  opacity: 0.8;
+}
+link_button {
+    background:none!important;
+    border:none; 
+    padding:0!important;
+	font-size: 17px;
+    font-family: Raleway;
+    color:#ff6666;
+    text-align: center;
+    cursor:pointer;
+}
+</style>
+<body>
+
+<form id="regForm" action="/select_patient" method="post">
+  <h1>Please Select A Patient To Start A Prediction Form:</h1>
+   <div>
+    <p><input placeholder="Search By Email" name="email" type="text" required></p>
+    	
+   </div>
+   
+  <div style="overflow:auto;">
+	<div style="float:right;">
+      <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
+      <button type="submit" class="button" value="select_patient" name="select_patient">Select Patient</button>
+	  {%if noexist%}<p>No Patient Found With That Email</p>{%endif%}
+	</div>
+  </div>
+  <br>
+  <hr>
+  
+  {%if recents%}
+  <div method="post">
+	<center><h2>Recently Added Patients:</h2></center>
+	
+	<table style="width:100%">
+	<tr>
+		<th>PATIENT ID</th>
+		<th>FIRST NAME</th>
+		<th>LAST NAME</th> 
+		<th>EMAIL</th>
+		<th>DATE CREATED</th>
+	</tr>
+	{%for recent in recents%}
+	<tr>
+		<td>{{recent[0]}}</td>
+		<td>{{recent[1]}}</td> 
+		<td>{{recent[2]}}</td> 
+		<td>{{recent[3]}}</td> 
+		<td>{{recent[-1]}}</td>
+		<td><link_button type="submit"  class="link_button" value="select_recent_patient" name="select_recent_patient" formnovalidate>Select</link_button></td>
+	</tr>
+	{%endfor%}	
+	</table>
+  <div>
+	{%endif%}
+</form>
+
+</body>
+</html>

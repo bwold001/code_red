@@ -84,6 +84,7 @@ button:hover {
 <body>
 
 <form id="regForm" action="/create_patient" method="post">
+  
   <h1>Please Enter Patients Information:</h1>
   <div>
     <p><input placeholder="First name" name="fname" type="text" required></p>
@@ -93,7 +94,7 @@ button:hover {
 	<input type="radio" name="gender" value="male" required> Male<br>
 	<input type="radio" name="gender" value="female">  Female<br>
 	<p><input placeholder="Age" name="age" type="number" ></p>
-	<p><input placeholder="Phone Number" name="phone_number" type="tel"></p>
+	<p><input placeholder="Phone Number" name="phone_number" type="number"></p>
 	<h3>Race/Ethnicity</h3>
     <input type="radio" name="race" value="White" required> White<br>
 	<input type="radio" name="race" value="Black/African American"> Black/African American<br>
@@ -103,11 +104,12 @@ button:hover {
 	<input type="radio" name="race" value="Other"> Other<br>
 	
 </div>
+    
 
   <div style="overflow:auto;">
     <div style="float:right;">
       <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
-      <button type="submit" class="button" value="create_patient" name="create_patient">Create Patient</button>
+      <button {%if success%}style="display: none;"{%endif%}type="submit" class="button" value="create_patient" name="create_patient">Create Patient</button>
 	  {%if exist%}<p>A Patient With That Email Exists.</p>{%endif%}
     </div>
   </div>

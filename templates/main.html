@@ -53,8 +53,8 @@ button:hover {
 <body>
 
 <form id="regForm" action="/" method="post">
-    <center> <img src= "logo2.png" height="200" width="200"></center>
-  <h1 >Welcome To Whabi</h1>
+    <center> <img src= "{{ url_for('static', filename='logo2.jpg') }}" height="200" width="200"></center>
+  <h1 >Whabi</h1>
   <div>	
   <div style="overflow:auto;">
   <hr>
@@ -63,7 +63,7 @@ button:hover {
     <div>
       <button type="submit" value="sign_in" name="sign_in"id="signin">Sign In</button>
       <button type="submit" value="sign_up" name = "sign_up" id="signup">Sign Up</button>
-      {%if success%}<p>Successfully Registered</p>{%endif%}
+      {%if success%} <p>Successfully Registered</p>{%endif%}
     </div>
   </div>
 
