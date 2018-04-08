@@ -80,10 +80,46 @@ button:hover {
 .step.finish {
   background-color: #4CAF50;
 }
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: #ff6666;
+}
+
 </style>
 <body>
 
 <form id="regForm" action="/update_patient" method="post">
+    <div>
+  <ul>
+  <li><a  href="{{ url_for('update_profile') }}">Edit Profile</a></li>
+  <li><a href="{{ url_for('home') }}">Home</a></li>
+  <li><a href="{{ url_for('main') }}">Log Out</a></li>
+</ul>
+</div>
   {%if patient_id%}
   <h1>Here You Can Edit A Patients Information:</h1>
   <div>	
@@ -109,15 +145,36 @@ button:hover {
 	
 	<hr>
 	<h3>Recent Predictions Found For Patient:</h3>
-	<p>{patient_predictions.txt}</p>
+	{%if recent_predictions%}
+	<div method="post">	
+	<table style="width:100%">
+	<tr>
+		<th>PREDICTION ID</th>
+		<th>PREDICTION DATA FILE</th> 
+		<th>PREDICTION RESULT</th>
+		<th>DATE PREDICTED</th>
+	</tr>
+	{%for prediction in recent_predictions%}
+	<tr>
+		<td>{{prediction[0]}}</td>
+		<td>{{prediction[2]}}</td> 
+		<td align="center">{{prediction[3]}}</td> 
+		<td>{{prediction[4]}}</td>  
+	</tr>
+	{%endfor%}	
+	</table>
+  </div>
+	{%endif%}
 	{%endif%}
 	{%if success%}<p>Patient Information Successfully Updated.</p>{%endif%}
 	{%if error%}<p>Patient Not Updated.</p>{%endif%}
+	
+	
 </div>
   <div style="overflow:auto;">
     <div style="float:right;">
       <button type="submit"  class="button" value="back" name="back" formnovalidate>Back</button>
-      
+      <button type="submit"  class="button" value="remove_patient" name="remove_patient" formnovalidate>Remove Patient</button>
 	  <button {%if success%}style="display: none;"{%endif%} type="submit" class="button" value="update_patient" name="update_patient">Update</button>
 	  
     </div>

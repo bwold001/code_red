@@ -78,12 +78,49 @@ button:hover {
 
 /* Mark the steps that are finished and valid: */
 .step.finish {
-  background-color: #4CAF50;
+  background-color: #000000;
 }
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: #ff6666;
+}
+
 </style>
 <body>
 
 <form id="regForm" action="/get_prediction" method='post'>
+    <div>
+  <ul>
+  <li><a  href="{{ url_for('update_profile') }}">Edit Profile</a></li>
+  <li><a  href="{{ url_for('home') }}">Home</a></li>
+  <li><a href="{{ url_for('main') }}">Log Out</a></li>
+</ul>
+</div>
+
   <h1>Please Enter Patient's Information:</h1>
   <!-- One "tab" for each step in the form: -->
   <div class="tab"> 
@@ -202,37 +239,37 @@ button:hover {
 	<p><input type="checkbox" name="comorbid" value="ComorbiditiesExtractor__comor_sld">SLD</p>
   </div>
    
-  <!-- <div class="tab"> -->
-    <!-- Medications: -->
-    <!-- <p><input placeholder="Number Of Inpatient Medications Given To Patient" oninput="this.className = ''" name="inp_num_meds"></p> -->
-	<!-- <p><input placeholder="Number Of Unique Medication Categories Among Inpatient Medications Given To Patient" oninput="this.className = ''" name="inp_num_unique_meds"></p> -->
-	<!-- Check If Patient Was Given Any Medications in the Given Category In An Inpatient Setting: -->
-	<!-- <p><input type="checkbox" name="inp_med_diuretics" value="inp_med_diuretics">Diuretic</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_minerals_&_electrolytes" value="inp_med_minerals_&_electrolytes">Minerals & Electrolytes</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_antiasthmatic" value="inp_med_antiasthmatic">Antiasthmatic</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_corticosteroids" value="inp_med_corticosteroids">Corticosteroids</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_anticoagulants" value="inp_med_anticoagulants">Aanticoagulants</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_misc._antiinfectives" value="inp_med_misc._antiinfectives">Miscellaneous Antiinfectives</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_antidiabetic" value="inp_med_antidiabetic">Antidiabetic</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_assorted_classes" value="inp_med_assorted_classes">Assorted Classes</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_hematopoietic_agents" value="inp_med_hematopoietic_agents">Hematopoietic Agents</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_nutrients" value="inp_med_nutrients">Nutrients</p> -->
-	<!-- <p><input type="checkbox" name="inp_dea_class_C-II" value="inp_dea_class_C-II">Schedule 2 Drugs</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_fluoroquinolones" value="inp_med_fluoroquinolones">Fluoroquinolones</p> -->
-	<!-- <p><input type="checkbox" name="inp_med_analgesics-narcotic" value="inp_med_analgesics-narcotic">Analgesic Narcotics</p> -->
-	<!-- Check If Patient Was Given Any Medications in the Given Category In An Outpatient Setting: -->
-	<!-- <p><input type="checkbox" name="med_anti-rheumatic" value="med_anti-rheumatic">Antirheumatic</p> -->
-    <!-- <hr> -->
-    <!-- Discharge: -->
-	<!-- <p><input placeholder="Number Of Days Of Patient's Current Hospital Stay" oninput="this.className = ''" name="length_of_stay"></p> -->
-	<!-- Select Discharge Time: -->
-	<!-- <p><input type="radio" name="disch_time_cat_morning" value="disch_time_cat_morning">Morning</p> -->
-	<!-- <p><input type="radio" name="disch_time_cat_afternoon" value="disch_time_cat_afternoon">Afternoon</p> -->
-	<!-- Select Discharge Location: -->
-	<!-- <p><input type="radio" name="disch_location_cat_home_no_service" value="disch_location_cat_home_no_service">Home Under Care Of Organized Home Health Service</p> -->
-	<!-- <p><input type="radio" name="disch_location_cat_snf" value="disch_location_cat_snf">Skilled Nursing Facility</p> -->
-	<!-- <p><input type="radio" name="disch_location_cat_home_health" value="disch_location_cat_home_health">Home/ Self Care</p> -->
-  <!-- </div> -->
+  <div class="tab">
+    Medications:
+    <p><input placeholder="Number Of Inpatient Medications Given To Patient" name="inp_num_meds" value="inp_num_meds" type="number" required></p>
+	<p><input placeholder="Number Of Unique Medication Categories Among Inpatient Medications Given To Patient" name="inp_num_unique_meds" value="inp_num_unique_meds" type="number"required></p>
+	Check If Patient Was Given Any Medications in the Given Category In An Inpatient Setting:
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_diuretics">Diuretic</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_minerals_&_electrolytes">Minerals & Electrolytes</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_antiasthmatic">Antiasthmatic</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_corticosteroids">Corticosteroids</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_anticoagulants">Aanticoagulants</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_misc._antiinfectives">Miscellaneous Antiinfectives</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_antidiabetic">Antidiabetic</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_assorted_classes">Assorted Classes</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_hematopoietic_agents">Hematopoietic Agents</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_nutrients">Nutrients</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_dea_class_C-II">Schedule 2 Drugs</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_fluoroquinolones">Fluoroquinolones</p>
+	<p><input type="checkbox" name="medications_inpatient" value="MedicationsExtractor__inp_med_analgesics-narcotic">Analgesic Narcotics</p>
+	Check If Patient Was Given Any Medications in the Given Category In An Outpatient Setting:
+	<p><input type="checkbox" name="medications_outpatient" value="MedicationsExtractor__outp_med_anti-rheumatic">Antirheumatic</p>
+    <hr>
+    Discharge:
+	<p><input placeholder="Number Of Days Of Patient's Current Hospital Stay" name="length_of_stay" value="length_of_stay" type="number" required></p>
+	Select Discharge Time:
+	<p><input type="radio" name="disch_time" value="disch_time_cat_morning">Morning</p>
+	<p><input type="radio" name="disch_time" value="disch_time_cat_afternoon">Afternoon</p>
+	Select Discharge Location:
+	<p><input type="radio" name="disch_location" value="disch_location_cat_home_no_service">Home Under Care Of Organized Home Health Service</p>
+	<p><input type="radio" name="disch_location" value="disch_location_cat_snf">Skilled Nursing Facility</p>
+	<p><input type="radio" name="disch_location" value="disch_location_cat_home_health">Home/ Self Care</p>
+  </div>
 
   
   <div style="overflow:auto;">

@@ -44,10 +44,51 @@ button {
 button:hover {
   opacity: 0.8;
 }
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: #ff6666;
+}
+
 </style>
 <body>
 
 <form id="regForm" action="/search_patient" method="post">
+    <div>
+  <ul>
+  <li><a  href="{{ url_for('update_profile') }}">Edit Profile</a></li>
+  <li><a  href="{{ url_for('home') }}">Home</a></li>
+  <li><a href="{{ url_for('main') }}">Log Out</a></li>
+</ul>
+</div>
+  
+  {%if removed%}<p>Patient Record Successfully Deleted</p>{%endif%}
+  {%if notremoved%}<p>Patient Record Not Deleted</p>{%endif%}
+  
+  
   <h1>Please Enter Patient's Name To Search:</h1>
 
    <div>
@@ -87,7 +128,7 @@ button:hover {
 	</tr>
 	{%endfor%}	
 	</table>
-  <div>
+  </div>
 	{%endif%}
 </form>
 

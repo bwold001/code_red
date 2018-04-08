@@ -83,7 +83,7 @@ button:hover {
 </style>
 <body>
 
-<form id="regForm" action="/save_prediction">
+<form id="regForm" action="/save_prediction" method="post">
   <h1>Results</h1>
   <div>	
   <div style="overflow:auto;">
@@ -95,12 +95,11 @@ button:hover {
     </div>
 	<div style="overflow:auto;">
     <div >
-      <button type="button" id="back" >Back</button>
-      <button type="button" id="save">Save</button>
+      <button type="submit"  class="button" value="back" name="back" >Back</button>
+      <button type="submit"  class="button" value="save" name="save" >Save</button>
     </div>
   </div>
   </div>
-  <!-- Circles which indicates the steps of the form: -->
 
 </form>
 

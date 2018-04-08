@@ -1,10 +1,10 @@
 
 from flask import Flask, request, redirect, render_template
-import models as dbHandler
+import db_models as dbHandler
 import csv
 from collections import OrderedDict
 import time
-
+import prediction_model
 
 app = Flask(__name__)
 global patient_values
@@ -69,11 +69,23 @@ def home():
 	if request.form.get('create_patient') == 'create_patient':
 		return render_template('create_patient.html')
 	elif request.form.get('search_patient') == 'search_patient':
+		global recents
 		recents = dbHandler.getRecents()
 		return render_template('search_patient.html',recents=recents)
 	elif request.form.get('patient_prediction') == 'patient_prediction':
 		recents = dbHandler.getRecents()
 		return render_template('select_patient.html', recents=recents)
+	elif request.form.get('edit') == 'edit':
+		user_info = dbHandler.getUserInfo(usr_id)
+		user_id = user_info[0][0]
+		fname = user_info[0][3]
+		lname = user_info[0][4]
+		email = user_info[0][1]
+		phone = user_info[0][5]
+		time_created = user_info[0][6]
+		return (fname)
+		#return render_template('edit_profile.html', user_id=user_id, fname=fname,
+		#					lname=lname, email=email, phone=phone, time_created=time_created)
 	else:
 		return render_template('home.html')
 
@@ -100,7 +112,8 @@ def create_patient():
 		
 @app.route('/search_patient', methods=['POST', 'GET'])
 def search_patient():	
-	recents = dbHandler.getRecents()	
+	recents = dbHandler.getRecents()
+	
 	if request.method=='POST':		
 		#return (str(recents))
 		if request.form.get('back') == 'back':
@@ -117,10 +130,11 @@ def search_patient():
 				age = patient_info[0][5]
 				phone = patient_info[0][6]
 				race = patient_info[0][7]
-				time_created = patient_info[0][8]
+				time_created = patient_info[0][8]				
+				recent_predictions = dbHandler.getRecentPredictions(patient_id)
 				return render_template('display_patient.html', patient_id=patient_id, fname=fname,
 										lname=lname, email=email, gender=gender, age=age,
-										phone=phone, race=race, time_created=time_created)
+										phone=phone, race=race, time_created=time_created, recent_predictions = recent_predictions)
 			elif len(patient_info) > 1:
 				return render_template('search_patient.html', patient_info=patient_info, recents=recents)
 			else:
@@ -142,11 +156,11 @@ def search_patient():
 										# lname=lname, email=email, gender=gender, age=age,
 										# phone=phone, race=race, time_created=time_created)
 	else:
-	
-		return render_template('search_patient.html',recents=recents)
+		return render_template('search_patient.html')
 		
 @app.route('/update_patient', methods=['POST', 'GET'])
 def update_patient():
+	recents = dbHandler.getRecents()
 	if request.method=='POST':
 		if request.form.get('back') == 'back':
 			return render_template('search_patient.html', recents=recents)
@@ -161,10 +175,52 @@ def update_patient():
 			if updatePatient == 1:
 				return render_template('display_patient.html',success=1)
 			else:
-				return render_template('display_patient.html', error=1)						
+				return render_template('display_patient.html', error=1)	
+		elif request.form.get('remove_patient')== 'remove_patient':
+			patient_id = request.form['patient_id']
+			remove_patient = dbHandler.removePatient(patient_id)
+			if remove_patient == 1:
+				return render_template ('search_patient.html', removed=1, recents=recents)
+			else:
+				return render_template ('search_patient.html', notremoved=1)
 	else:
 		return render_template('display_patient.html')
 
+@app.route('/update_profile', methods=['POST', 'GET'])
+def update_profile():
+	if request.method=='POST':		
+		if request.form.get('back') == 'back':
+			return render_template('home.html', user_name=usr_name)
+		elif request.form.get('update_profile') == 'update_profile':
+			fname = request.form['fname']
+			lname = request.form['lname']
+			email = request.form['email']
+			phone = str(request.form['phone_number'])
+			password = request.form['password']
+			confirm_update_password = request.form['confirm_update_password']
+			if not password and not confirm_update_password:
+				success = dbHandler.updateUserProfile(usr_id,fname,lname,phone,password)
+				return render_template('home.html',updated=1)
+			elif password == confirm_update_password:
+				success = dbHandler.updateUserProfile(usr_id,fname,lname,phone,password)
+				return render_template('home.html',updated=1)
+			else:
+				return render_template ('edit_profile.html', nomatch=1)
+								
+	else:
+		user_info = dbHandler.getUserInfo(usr_id)
+		user_id = user_info[0][0]
+		fname = user_info[0][3]
+		lname = user_info[0][4]
+		email = user_info[0][1]
+		phone = user_info[0][5]
+		time_created = user_info[0][6]
+		return render_template('edit_profile.html', user_id=user_id, fname=fname,
+							lname=lname, email=email, phone=phone, time_created=time_created)
+		#return render_template('edit_profile.html', user_id=usr_id)
+
+		
+		
 @app.route('/select_patient', methods=['POST', 'GET'])
 def select_patient():
 	recents = dbHandler.getRecents()	
@@ -201,6 +257,7 @@ def select_patient():
 def get_prediction():
 	if request.method=='POST':
 		#first tab in form
+		global patient_id, lname
 		patient_id = request.form['patient_id']
 		fname = request.form['fname']
 		lname = request.form['lname']
@@ -321,6 +378,7 @@ def get_prediction():
 		num_total_lab_results = request.form['num_total_lab_results']
 		num_abnormal_results = request.form['num_abnormal_results']
 		tabak_lab_score = request.form['tabak_lab_score']
+		
 		tabak_very_low_albumin = request.form['tabak_very_low_albumin']
 		tabak_high_pt_inr = request.form['tabak_high_pt_inr']
 		tabak_high_bun = request.form['tabak_high_bun']
@@ -348,7 +406,8 @@ def get_prediction():
 		patient_values['LabResultsExtractor__num_abnormal_results']=num_abnormal_results
 		patient_values['LabResultsExtractor__num_total_results']= num_total_lab_results
 		patient_values['LabResultsExtractor__tabak_lab_score']= tabak_lab_score		
-		patient_values['LabResultsExtractor__tabak_low_albumin']=0
+		patient_values['LabResultsExtractor__tabak_low_albumin']=0		
+		patient_values['LabResultsExtractor__tabak_very_low_albumin']=0
 		patient_values['LabResultsExtractor__tabak_high_pt_inr']=0
 		patient_values['LabResultsExtractor__tabak_high_bun']=0
 		patient_values['LabResultsExtractor__hosp_low_sodium']=0
@@ -359,8 +418,11 @@ def get_prediction():
 		patient_values['LabResultsExtractor__tabak_high_bilirubin']=0
 		patient_values['LabResultsExtractor__tabak_high_troponin_or_ckmb']=0
 		patient_values['LabResultsExtractor__tabak_low_albumin']=0
-		patient_values['LabResultsExtractor__tabak_abnormal_pco2']=0		
+		patient_values['LabResultsExtractor__tabak_abnormal_pco2']=0
+		
 		if float(tabak_very_low_albumin) <= 2.4:
+					patient_values['LabResultsExtractor__tabak_very_low_albumin']=1
+		if float(tabak_low_albumin) <= 2.4:
 			patient_values['LabResultsExtractor__tabak_low_albumin']=1
 		if float(tabak_high_pt_inr) > 1.2:	
 			patient_values['LabResultsExtractor__tabak_high_pt_inr']=0
@@ -397,55 +459,124 @@ def get_prediction():
 		patient_values['ComorbiditiesExtractor__comor_pvr']=0
 		patient_values['ComorbiditiesExtractor__comor_mi']=0
 		patient_values['ComorbiditiesExtractor__comor_sld']=0
-		if charlson_index >=4:
+		if int(charlson_index) >=4:
 			patient_values['ComorbiditiesExtractor__charlson_index_lace']=5
 		for com in comorbid:
 			patient_values[com]=1
+			
+		#fifth tab in form
+		inp_num_meds = request.form['inp_num_meds']
+		inp_num_unique_meds = request.form['inp_num_unique_meds']
+		medications_inpatient = request.form.getlist('medications_inpatient')
+		medications_outpatient = request.form.getlist('medications_outpatient')
+		inp_num_unique_meds = request.form['inp_num_unique_meds']
+		length_of_stay = request.form['length_of_stay']
+		disch_time = request.form['disch_time']
+		disch_location = request.form['disch_location']
 		
-		with open('static/test.csv','wb') as f:
-			fieldnames = ['UtilizationExtractor__pre_6_month_inpatient','UtilizationExtractor__pre_12_month_inpatient','ComorbiditiesExtractor__charlson_index',
-			'ComorbiditiesExtractor__charlson_index_lace','UtilizationExtractor__pre_3_month_inpatient','LabResultsExtractor__num_abnormal_results',
-			'LabResultsExtractor__num_total_results','LabResultsExtractor__tabak_lab_score','ComorbiditiesExtractor__comor_ren','ComorbiditiesExtractor__comor_chf',
-			'UtilizationExtractor__er_visits_lace','MedicationsExtractor__inp_num_unique_meds','HospitalProblemsExtractor__hospital_problems_count',
-			'ProviderExtractor__specialty_obstetrics_gynecology','MedicationsExtractor__inp_num_meds','UtilizationExtractor__pre_6_month_emergency',
-			'AdmissionExtractor__admission_type_cat_elective','UtilizationExtractor__pre_12_month_emergency','ComorbiditiesExtractor__comor_cpd,UtilizationExtractor__pre_3_month_emergency',
-			'ProviderExtractor__specialty_hospitalist_medical','BasicDemographicsExtractor__age','DischargeExtractor__disch_location_cat_home_no_service','ProceduresExtractor__px_ot_asst_del',
-			'LabResultsExtractor__tabak_very_low_albumin','BasicDemographicsExtractor__age^2','HospitalProblemsExtractor__hcup_category_chr_kidney_disease','AdmissionExtractor__acuity_lace',
-			'AdmissionExtractor__admission_type_cat_emergency','ComorbiditiesExtractor__comor_mdm','MedicationsExtractor__inp_med_diuretics','DischargeExtractor__length_of_stay_lace',
-			'BasicDemographicsExtractor__tabak_age','MedicationsExtractor__inp_med_minerals_&_electrolytes','BasicDemographicsExtractor__age^3','ComorbiditiesExtractor__comor_sdm',
-			'HospitalProblemsExtractor__hcup_category_nml_preg_del','EncounterReasonExtractor__problem_breathing','LabResultsExtractor__tabak_high_pt_inr',
-			'HospitalProblemsExtractor__hcup_category_chf_nonhp','ProviderExtractor__specialty_internal_medicine','LabResultsExtractor__pct_abnormal_results','ProceduresExtractor__px_hemodialysis',
-			'ProceduresExtractor__px_ob_lacerat','ComorbiditiesExtractor__comor_mal','ProceduresExtractor__px_blood_transf','MedicationsExtractor__inp_med_antiasthmatic',
-			'PayerExtractor__insurance_type_cat_medicare','HospitalProblemsExtractor__hcup_category_copd','LabResultsExtractor__tabak_high_bun','ComorbiditiesExtractor__comor_mld',
-			'MedicationsExtractor__inp_med_corticosteroids','DischargeExtractor__disch_location_cat_home_health','MedicationsExtractor__inp_med_anticoagulants','ComorbiditiesExtractor__comor_mst',
-			'MedicationsExtractor__inp_med_misc._antiinfectives','DischargeExtractor__disch_location_cat_snf','MedicationsExtractor__inp_med_antidiabetic',
-			'MedicationsExtractor__inp_med_assorted_classes','LabResultsExtractor__hosp_low_sodium','HospitalProblemsExtractor__hcup_category_fluid_elc_dx','HospitalProblemsExtractor__hcup_category_anemia',
-			'ComorbiditiesExtractor__comor_pvr','ComorbiditiesExtractor__comor_mi','HospitalProblemsExtractor__hcup_category_diabmel_w_cm','LabResultsExtractor__tabak_abnormal_sodium',
-			'ProceduresExtractor__px_c_section','MedicationsExtractor__inp_med_hematopoietic_agents','DischargeExtractor__length_of_stay','ComorbiditiesExtractor__comor_sld',
-			'MedicationsExtractor__outp_med_anti-rheumatic','PayerExtractor__insurance_type_cat_commercial','HospitalProblemsExtractor__hcup_category_dysrhythmia','LabResultsExtractor__tabak_very_high_bun',
-			'ProceduresExtractor__px_ot_vasc_cath','LabResultsExtractor__hosp_low_hemoglobin','HospitalProblemsExtractor__hcup_category_ac_renl_fail','LabResultsExtractor__tabak_high_bilirubin',
-			'VitalsExtractor__pulse','HealthHistoryExtractor__tobacco_cat_quit','HospitalProblemsExtractor__hcup_category_htn','BasicDemographicsExtractor__marital_status_cat_married',
-			'MedicationsExtractor__inp_med_nutrients','MedicationsExtractor__inp_dea_class_C-II','MedicationsExtractor__inp_med_fluoroquinolones','MedicationsExtractor__inp_med_analgesics-narcotic',
-			'HospitalProblemsExtractor__hcup_category_adlt_resp_fl','HospitalProblemsExtractor__hcup_category_oth_liver_dx','HealthHistoryExtractor__alcohol_cat_no',
-			'LabResultsExtractor__tabak_high_troponin_or_ckmb','LabResultsExtractor__tabak_low_albumin','ProceduresExtractor__px_ca_chemorx','BasicDemographicsExtractor__marital_status_cat_widowed',
-			'HospitalProblemsExtractor__hcup_category_ot_compl_bir','LabResultsExtractor__tabak_abnormal_pco2','DischargeExtractor__disch_time_cat_morning','HospitalProblemsExtractor__hcup_category_oth_low_resp',
-			'BasicDemographicsExtractor__if_female_bool','HospitalProblemsExtractor__hcup_category_septicemia','HospitalProblemsExtractor__hcup_category_diabmel_no_c']
+		patient_values['MedicationsExtractor__inp_num_unique_meds'] = inp_num_unique_meds
+		patient_values['MedicationsExtractor__inp_num_meds']= inp_num_meds
+		
+		patient_values['MedicationsExtractor__inp_med_diuretics']=0
+		patient_values['MedicationsExtractor__inp_med_minerals_&_electrolytes']=0
+		patient_values['MedicationsExtractor__inp_med_antiasthmatic']=0
+		patient_values['MedicationsExtractor__inp_med_corticosteroids']=0
+		patient_values['MedicationsExtractor__inp_med_anticoagulants']=0
+		patient_values['MedicationsExtractor__inp_med_misc._antiinfectives']=0
+		patient_values['MedicationsExtractor__inp_med_antidiabetic']=0
+		patient_values['MedicationsExtractor__inp_med_assorted_classes']=0
+		patient_values['MedicationsExtractor__inp_med_hematopoietic_agents']=0
+		patient_values['MedicationsExtractor__outp_med_anti-rheumatic']=0
+		for medication in medications_outpatient:
+			patient_values[medication]=1
+		
+		patient_values['MedicationsExtractor__inp_med_nutrients']=0
+		patient_values['MedicationsExtractor__inp_dea_class_C-II']=0
+		patient_values['MedicationsExtractor__inp_med_fluoroquinolones']=0
+		patient_values['MedicationsExtractor__inp_med_analgesics-narcotic']=0
+		for medication in medications_inpatient:
+			patient_values[medication]=1		
+		if disch_location == 'disch_location_cat_snf':
+			patient_values['DischargeExtractor__disch_location_cat_home_no_service']=0
+			patient_values['DischargeExtractor__disch_location_cat_home_health']=0
+			patient_values['DischargeExtractor__disch_location_cat_snf']=1
+		elif disch_location =='disch_location_cat_home_health':
+			patient_values['DischargeExtractor__disch_location_cat_home_no_service']=0
+			patient_values['DischargeExtractor__disch_location_cat_home_health']=1
+			patient_values['DischargeExtractor__disch_location_cat_snf']=0
+		elif disch_location=='disch_location_cat_home_no_service':
+			patient_values['DischargeExtractor__disch_location_cat_home_no_service']=1
+			patient_values['DischargeExtractor__disch_location_cat_home_health']=0
+			patient_values['DischargeExtractor__disch_location_cat_snf']=0		
+		patient_values['DischargeExtractor__length_of_stay_lace']=length_of_stay
+		if 4<= int(length_of_stay)<=6:
+			patient_values['DischargeExtractor__length_of_stay_lace']=4
+		elif 7<= int(length_of_stay)<=13:
+			patient_values['DischargeExtractor__length_of_stay_lace']=5
+		elif int(length_of_stay) >= 14:
+			patient_values['DischargeExtractor__length_of_stay_lace']=7			
+		patient_values['DischargeExtractor__length_of_stay']=length_of_stay	
+		if disch_time == 'disch_time_cat_morning':
+			patient_values ['DischargeExtractor__disch_time_cat_morning'] = 1
+		else:
+			patient_values ['DischargeExtractor__disch_time_cat_morning'] = 0	
+		
+		
+		# with open('static/test.csv','wb') as f:
+			# fieldnames = ['UtilizationExtractor__pre_6_month_inpatient','UtilizationExtractor__pre_12_month_inpatient','ComorbiditiesExtractor__charlson_index',
+			# 'ComorbiditiesExtractor__charlson_index_lace','UtilizationExtractor__pre_3_month_inpatient','LabResultsExtractor__num_abnormal_results',
+			# 'LabResultsExtractor__num_total_results','LabResultsExtractor__tabak_lab_score','ComorbiditiesExtractor__comor_ren','ComorbiditiesExtractor__comor_chf',
+			# 'UtilizationExtractor__er_visits_lace','MedicationsExtractor__inp_num_unique_meds','HospitalProblemsExtractor__hospital_problems_count',
+			# 'ProviderExtractor__specialty_obstetrics_gynecology','MedicationsExtractor__inp_num_meds','UtilizationExtractor__pre_6_month_emergency',
+			# 'AdmissionExtractor__admission_type_cat_elective','UtilizationExtractor__pre_12_month_emergency','ComorbiditiesExtractor__comor_cpd,UtilizationExtractor__pre_3_month_emergency',
+			# 'ProviderExtractor__specialty_hospitalist_medical','BasicDemographicsExtractor__age','DischargeExtractor__disch_location_cat_home_no_service','ProceduresExtractor__px_ot_asst_del',
+			# 'LabResultsExtractor__tabak_very_low_albumin','BasicDemographicsExtractor__age^2','HospitalProblemsExtractor__hcup_category_chr_kidney_disease','AdmissionExtractor__acuity_lace',
+			# 'AdmissionExtractor__admission_type_cat_emergency','ComorbiditiesExtractor__comor_mdm','MedicationsExtractor__inp_med_diuretics','DischargeExtractor__length_of_stay_lace',
+			# 'BasicDemographicsExtractor__tabak_age','MedicationsExtractor__inp_med_minerals_&_electrolytes','BasicDemographicsExtractor__age^3','ComorbiditiesExtractor__comor_sdm',
+			# 'HospitalProblemsExtractor__hcup_category_nml_preg_del','EncounterReasonExtractor__problem_breathing','LabResultsExtractor__tabak_high_pt_inr',
+			# 'HospitalProblemsExtractor__hcup_category_chf_nonhp','ProviderExtractor__specialty_internal_medicine','LabResultsExtractor__pct_abnormal_results','ProceduresExtractor__px_hemodialysis',
+			# 'ProceduresExtractor__px_ob_lacerat','ComorbiditiesExtractor__comor_mal','ProceduresExtractor__px_blood_transf','MedicationsExtractor__inp_med_antiasthmatic',
+			# 'PayerExtractor__insurance_type_cat_medicare','HospitalProblemsExtractor__hcup_category_copd','LabResultsExtractor__tabak_high_bun','ComorbiditiesExtractor__comor_mld',
+			# 'MedicationsExtractor__inp_med_corticosteroids','DischargeExtractor__disch_location_cat_home_health','MedicationsExtractor__inp_med_anticoagulants','ComorbiditiesExtractor__comor_mst',
+			# 'MedicationsExtractor__inp_med_misc._antiinfectives','DischargeExtractor__disch_location_cat_snf','MedicationsExtractor__inp_med_antidiabetic',
+			# 'MedicationsExtractor__inp_med_assorted_classes','LabResultsExtractor__hosp_low_sodium','HospitalProblemsExtractor__hcup_category_fluid_elc_dx','HospitalProblemsExtractor__hcup_category_anemia',
+			# 'ComorbiditiesExtractor__comor_pvr','ComorbiditiesExtractor__comor_mi','HospitalProblemsExtractor__hcup_category_diabmel_w_cm','LabResultsExtractor__tabak_abnormal_sodium',
+			# 'ProceduresExtractor__px_c_section','MedicationsExtractor__inp_med_hematopoietic_agents','DischargeExtractor__length_of_stay','ComorbiditiesExtractor__comor_sld',
+			# 'MedicationsExtractor__outp_med_anti-rheumatic','PayerExtractor__insurance_type_cat_commercial','HospitalProblemsExtractor__hcup_category_dysrhythmia','LabResultsExtractor__tabak_very_high_bun',
+			# 'ProceduresExtractor__px_ot_vasc_cath','LabResultsExtractor__hosp_low_hemoglobin','HospitalProblemsExtractor__hcup_category_ac_renl_fail','LabResultsExtractor__tabak_high_bilirubin',
+			# 'VitalsExtractor__pulse','HealthHistoryExtractor__tobacco_cat_quit','HospitalProblemsExtractor__hcup_category_htn','BasicDemographicsExtractor__marital_status_cat_married',
+			# 'MedicationsExtractor__inp_med_nutrients','MedicationsExtractor__inp_dea_class_C-II','MedicationsExtractor__inp_med_fluoroquinolones','MedicationsExtractor__inp_med_analgesics-narcotic',
+			# 'HospitalProblemsExtractor__hcup_category_adlt_resp_fl','HospitalProblemsExtractor__hcup_category_oth_liver_dx','HealthHistoryExtractor__alcohol_cat_no',
+			# 'LabResultsExtractor__tabak_high_troponin_or_ckmb','LabResultsExtractor__tabak_low_albumin','ProceduresExtractor__px_ca_chemorx','BasicDemographicsExtractor__marital_status_cat_widowed',
+			# 'HospitalProblemsExtractor__hcup_category_ot_compl_bir','LabResultsExtractor__tabak_abnormal_pco2','DischargeExtractor__disch_time_cat_morning','HospitalProblemsExtractor__hcup_category_oth_low_resp',
+			# 'BasicDemographicsExtractor__if_female_bool','HospitalProblemsExtractor__hcup_category_septicemia','HospitalProblemsExtractor__hcup_category_diabmel_no_c']
 
-			#writer = csv.DictWriter(f, fieldnames=fieldnames,delimiter=',', extrasaction='ignore', quotechar='|')
-			#writer.writeheader()
-			#writer.writerow(patient_values.values())
-			timestr = time.strftime("%Y%m%d-%H%M%S")
-			with open('static/'+patient_name+timestr+'prediction_data.csv','wb') as f:
-				w = csv.writer(f)
-				w.writerow(patient_values.keys())
-				w.writerow(patient_values.values())				
+		global timestr
+		timestr = time.strftime("%Y%m%d-%H%M%S")
+		with open('static/'+lname+timestr+'prediction_data.csv','w',newline='') as f:
+			w = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			w.writerow(patient_values.keys())
+			w.writerow(patient_values.values())				
 			
+		global prediction_result
+		prediction_result = prediction_model.getPrediction('static/'+lname+timestr+'prediction_data.csv')
 			
-		prediction_result = 9
-		return render_template("prediction_result.html", prediction_result=prediction_result)
+		#prediction_result = 9
+		return render_template("prediction_result.html", prediction_result=str(prediction_result))
 	else:
 		return render_template('prediction_form.html')		
 
+		
+@app.route('/save_prediction', methods=['POST', 'GET'])
+def save_prediction():
+	if request.method=='POST':
+		upload = dbHandler.insertPrediction(patient_id, lname+timestr+'prediction_data.csv', prediction_result)		
+		if upload == 1:
+			return render_template ('select_patient.html', saved=1, recents=recents)
+		else:
+			return render_template ('select_patient.html', notsaved=1)
+	else:
+		return render_template('prediction_result.html')
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1')
 
