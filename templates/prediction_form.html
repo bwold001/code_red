@@ -135,14 +135,14 @@ li a:hover:not(.active) {
 	<input type="radio" name="gender" value="female" {%if gender == 'female'%} checked='check' {%endif%}readonly>  Female<br>
 	<p>Age: <input name="age" type="number" value="{{age}}" readonly></p>
 	Martial Status: 
-	<p><input type="radio" name="martial_status" value="married" required> Married<br></p>
+	<p><input type="radio" name="martial_status" value="married" > Married<br></p>
 	<p><input type="radio" name="martial_status" value="widowed"> Widowed<br></p>
-	<p><input type="radio" name="martial_status" value="neither"> Niether<br></p>
+	<p><input type="radio" name="martial_status" value="neither" checked='check'> Niether<br></p>
   </div>
   
   <div class="tab">
     Admission Type:
-    <p><input type="radio" name="admission_type" value="elective"> Elective<br></p>
+    <p><input type="radio" name="admission_type" value="elective" checked='check'> Elective<br></p>
 	<p><input type="radio" name="admission_type" value="emergency"> Emergency<br></p>
 	<hr>
 	Encounters:
@@ -153,7 +153,7 @@ li a:hover:not(.active) {
 	<p><input type="checkbox" name="patient_uses" value="alcohol">Alcohol<br></p>
 	<hr>
 	Select Insurance Type:
-	<p><input type="radio" name="insurance" value="medicare"> Medicare<br></p>
+	<p><input type="radio" name="insurance" value="medicare"  checked='check'> Medicare<br></p>
 	<p><input type="radio" name="insurance" value="commercial"> Commercial<br></p>
 	<hr>
 	Enter Number of Inpatient Visits in the past:
@@ -263,12 +263,12 @@ li a:hover:not(.active) {
     Discharge:
 	<p><input placeholder="Number Of Days Of Patient's Current Hospital Stay" name="length_of_stay" value="length_of_stay" type="number" required></p>
 	Select Discharge Time:
-	<p><input type="radio" name="disch_time" value="disch_time_cat_morning">Morning</p>
-	<p><input type="radio" name="disch_time" value="disch_time_cat_afternoon">Afternoon</p>
+	<p><input type="radio" name="disch_time" value="disch_time_cat_morning" checked='check'>Morning</p>
+	<p><input type="radio" name="disch_time" value="disch_time_cat_afternoon" >Afternoon</p>
 	Select Discharge Location:
 	<p><input type="radio" name="disch_location" value="disch_location_cat_home_no_service">Home Under Care Of Organized Home Health Service</p>
 	<p><input type="radio" name="disch_location" value="disch_location_cat_snf">Skilled Nursing Facility</p>
-	<p><input type="radio" name="disch_location" value="disch_location_cat_home_health">Home/ Self Care</p>
+	<p><input type="radio" name="disch_location" value="disch_location_cat_home_health"  checked='check'>Home/ Self Care</p>
   </div>
 
   

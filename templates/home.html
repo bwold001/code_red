@@ -87,7 +87,7 @@ li a:hover:not(.active) {
 <body>
 
 <form id="regForm" action="/home" method="post" >
-<div>
+<div >
   <ul>
   <li><a  href="{{ url_for('update_profile') }}">Edit Profile</a></li>
   <li><a class="active" href="{{ url_for('home') }}">Home</a></li>
@@ -101,7 +101,7 @@ li a:hover:not(.active) {
   <hr>
   <br>
   <br>
-    <div>
+    <div  align="center">
       <button type="submit" class="button" value="create_patient" name="create_patient" >Create Patient</button>
       <button type="submit" class="button" value="search_patient" name="search_patient" >Patient Search</button>
 	  <button type="submit" class="button" value="patient_prediction" name="patient_prediction">Patient Prediction</button>

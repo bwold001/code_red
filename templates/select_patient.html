@@ -128,12 +128,12 @@ li a:hover:not(.active) {
 	</tr>
 	{%for recent in recents%}
 	<tr>
-		<td>{{recent[0]}}</td>
-		<td>{{recent[1]}}</td> 
-		<td>{{recent[2]}}</td> 
-		<td>{{recent[3]}}</td> 
-		<td>{{recent[-1]}}</td>
-		<td><link_button type="submit"  class="link_button" value="select_recent_patient" name="select_recent_patient" formnovalidate>Select</link_button></td>
+		<td align="center">{{recent[0]}}</td>
+		<td align="center">{{recent[1]}}</td> 
+		<td align="center">{{recent[2]}}</td> 
+		<td align="center">{{recent[3]}}</td> 
+		<td align="center">{{recent[-1]}}</td>
+		<!-- <td><link_button type="submit"  class="link_button" value="select_recent_patient" name="select_recent_patient" formnovalidate>Select</link_button></td> -->
 	</tr>
 	{%endfor%}	
 	</table>

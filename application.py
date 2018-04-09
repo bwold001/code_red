@@ -51,6 +51,9 @@ def sign_in():
 			email = request.form['email']
 			password = request.form['password']
 			result = dbHandler.getPassword(email)
+			#return (str(result))
+			if len(result) == 0:
+				return render_template('sign_in.html',no_exist=1)
 			correct_password = str(result[0][0])
 			fname = str(result[0][1])
 			user_id = str(result[0][2])
@@ -107,8 +110,8 @@ def create_patient():
 				return render_template('home.html',success=1)
 			else:
 				return render_template('create_patient.html', exist=1)						
-	else:
-		return render_template('create_patient.html')
+	#else:
+	#	return render_template('create_patient.html')
 		
 @app.route('/search_patient', methods=['POST', 'GET'])
 def search_patient():	
@@ -155,8 +158,8 @@ def search_patient():
 			# return render_template('display_patient.html', patient_id=patient_id, fname=fname,
 										# lname=lname, email=email, gender=gender, age=age,
 										# phone=phone, race=race, time_created=time_created)
-	else:
-		return render_template('search_patient.html')
+	#else:
+	#	return render_template('search_patient.html')
 		
 @app.route('/update_patient', methods=['POST', 'GET'])
 def update_patient():
@@ -183,8 +186,8 @@ def update_patient():
 				return render_template ('search_patient.html', removed=1, recents=recents)
 			else:
 				return render_template ('search_patient.html', notremoved=1)
-	else:
-		return render_template('display_patient.html')
+	#else:
+	#	return render_template('display_patient.html')
 
 @app.route('/update_profile', methods=['POST', 'GET'])
 def update_profile():
@@ -250,8 +253,8 @@ def select_patient():
 			else:
 				return render_template('select_patient.html', noexist=1, recents=recents)
 		return render_template('select_patient.html', recents=recents)
-	else:	
-		return render_template('select_patient.html',recents=recents)
+	#else:	
+	#	return render_template('select_patient.html',recents=recents)
 		
 @app.route('/get_prediction', methods=['POST', 'GET'])
 def get_prediction():
@@ -563,8 +566,8 @@ def get_prediction():
 			
 		#prediction_result = 9
 		return render_template("prediction_result.html", prediction_result=str(prediction_result))
-	else:
-		return render_template('prediction_form.html')		
+	#else:
+	#	return render_template('prediction_form.html')		
 
 		
 @app.route('/save_prediction', methods=['POST', 'GET'])
@@ -575,8 +578,8 @@ def save_prediction():
 			return render_template ('select_patient.html', saved=1, recents=recents)
 		else:
 			return render_template ('select_patient.html', notsaved=1)
-	else:
-		return render_template('prediction_result.html')
+	#else:
+	#	return render_template('prediction_result.html')
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1')
 
