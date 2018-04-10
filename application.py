@@ -649,7 +649,7 @@ def get_prediction():
 			
 		
 			
-		return render_template("prediction_result.html", prediction_result=str(prediction_result)" %")
+		return render_template("prediction_result.html", prediction_result=str(prediction_result+ "%"))
 	#else:
 	#	return render_template('prediction_form.html')		
 
