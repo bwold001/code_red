@@ -4,15 +4,11 @@ Whabi is a 30-day all-cause hospital readmissions prediction tool as presented <
 
 How to run
 ----------
-1. Download
-In a terminal type:
-git clone -b whabi https://github.com/bwold001/code_red.git
 
-2. Swith into directory
-cd code_red
+1. Download : git clone -b whabi https://github.com/bwold001/code_red.git
 
-3. Install  requirements
-pip install -r requirements.txt
+2. Swith into directory : cd code_red
 
-4. Run
-python3 application.py
+3. Install  requirements : pip install -r requirements.txt
+
+4. Run : python3 application.py
