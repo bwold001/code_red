@@ -258,8 +258,8 @@ def select_patient():
 		
 @app.route('/get_prediction', methods=['POST', 'GET'])
 def get_prediction():
-	if request.method=='POST':
-		#first tab in form
+	if request.method=='POST':		
+		#first tab values in form
 		global patient_id, lname
 		patient_id = request.form['patient_id']
 		fname = request.form['fname']
@@ -268,6 +268,146 @@ def get_prediction():
 		age = str(request.form['age'])
 		martial_status = request.form['martial_status']	
 		
+		#second tab values in form
+		admission_type = request.form['admission_type']
+		breathing_problems = request.form.getlist('breathing_problems')	
+		patient_uses = request.form.getlist('patient_uses')
+		insurance = request.form['insurance']
+		three_month_inpatient = str(request.form['three_month_inpatient'])
+		six_month_inpatient = str(request.form['six_month_inpatient'])
+		twelve_month_inpatient = str(request.form['twelve_month_inpatient'])
+		three_month_emergency = str(request.form['three_month_emergency'])
+		six_month_emergency = str(request.form['six_month_emergency'])
+		twelve_month_emergency = str(request.form['twelve_month_emergency'])
+		
+		#third tab values in form
+		provider_speciality = request.form.getlist('speciality')
+		hospital_problems_count = request.form['hospital_problems_count']
+		hcup_category = request.form.getlist('hcup_category')
+		
+		#fourth tab values in form
+		ccs_category = request.form.getlist('ccs_category')
+		pulse = request.form['pulse']
+		num_total_lab_results = request.form['num_total_lab_results']
+		num_abnormal_results = request.form['num_abnormal_results']
+		tabak_lab_score = request.form['tabak_lab_score']
+		tabak_very_low_albumin = request.form['tabak_very_low_albumin']
+		tabak_high_pt_inr = request.form['tabak_high_pt_inr']
+		tabak_high_bun = request.form['tabak_high_bun']
+		hosp_low_sodium = request.form['hosp_low_sodium']
+		hosp_low_hemoglobin = request.form['hosp_low_hemoglobin']
+		tabak_high_bilirubin = request.form['tabak_high_bilirubin']
+		tabak_high_troponin = request.form['tabak_high_troponin']		
+		tabak_high_troponin_ckmb = request.form['tabak_high_troponin_ckmb']
+		tabak_low_albumin = request.form['tabak_low_albumin']
+		tabak_abnormal_pco2 = request.form['tabak_abnormal_pco2']
+		charlson_index = request.form['charlson_index']
+		comorbid = request.form.getlist('comorbid')
+		
+		#initialize csv file values to 0
+		patient_values['UtilizationExtractor__pre_6_month_inpatient']= 0
+		patient_values['UtilizationExtractor__pre_12_month_inpatient']= 0
+		patient_values['ComorbiditiesExtractor__charlson_index']= 0
+		patient_values['ComorbiditiesExtractor__charlson_index_lace']= 0
+		patient_values['UtilizationExtractor__pre_3_month_inpatient']= 0
+		patient_values['LabResultsExtractor__num_abnormal_results']= 0
+		patient_values['LabResultsExtractor__num_total_results']= 0
+		patient_values['LabResultsExtractor__tabak_lab_score']= 0
+		patient_values['ComorbiditiesExtractor__comor_ren']= 0
+		patient_values['ComorbiditiesExtractor__comor_chf']= 0
+		patient_values['UtilizationExtractor__er_visits_lace']= 0
+		patient_values['MedicationsExtractor__inp_num_unique_meds']= 0
+		patient_values['ProviderExtractor__specialty_obstetrics_gynecology']= 0
+		patient_values['HospitalProblemsExtractor__hospital_problems_count']= 0
+		patient_values['MedicationsExtractor__inp_num_meds']= 0
+		patient_values['UtilizationExtractor__pre_6_month_emergency']= 0
+		patient_values['AdmissionExtractor__admission_type_cat_elective']= 0
+		patient_values['UtilizationExtractor__pre_12_month_emergency']= 0
+		patient_values['ComorbiditiesExtractor__comor_cpd']= 0
+		patient_values['UtilizationExtractor__pre_3_month_emergency']= 0
+		patient_values['ProviderExtractor__specialty_hospitalist_medical']= 0
+		patient_values['BasicDemographicsExtractor__age']= 0
+		patient_values['DischargeExtractor__disch_location_cat_home_no_service']= 0
+		patient_values['ProceduresExtractor__px_ot_asst_del']= 0
+		patient_values['LabResultsExtractor__tabak_very_low_albumin']= 0
+		patient_values['BasicDemographicsExtractor__age^2']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_chr_kidney_disease']= 0
+		patient_values['AdmissionExtractor__acuity_lace']= 0
+		patient_values['AdmissionExtractor__admission_type_cat_emergency']= 0
+		patient_values['ComorbiditiesExtractor__comor_mdm']= 0
+		patient_values['MedicationsExtractor__inp_med_diuretics']= 0
+		patient_values['DischargeExtractor__length_of_stay_lace']= 0
+		patient_values['BasicDemographicsExtractor__tabak_age']= 0
+		patient_values['MedicationsExtractor__inp_med_minerals_&_electrolytes']= 0
+		patient_values['BasicDemographicsExtractor__age^3']= 0
+		patient_values['ComorbiditiesExtractor__comor_sdm']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_nml_preg_del']= 0
+		patient_values['EncounterReasonExtractor__problem_breathing']= 0
+		patient_values['LabResultsExtractor__tabak_high_pt_inr']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_chf_nonhp']= 0
+		patient_values['ProviderExtractor__specialty_internal_medicine']= 0
+		patient_values['LabResultsExtractor__pct_abnormal_results']= 0
+		patient_values['ProceduresExtractor__px_hemodialysis']= 0
+		patient_values['ProceduresExtractor__px_ob_lacerat']= 0
+		patient_values['ComorbiditiesExtractor__comor_mal']= 0
+		patient_values['ProceduresExtractor__px_blood_transf']= 0
+		patient_values['MedicationsExtractor__inp_med_antiasthmatic']= 0
+		patient_values['PayerExtractor__insurance_type_cat_medicare']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_copd']= 0
+		patient_values['LabResultsExtractor__tabak_high_bun']= 0
+		patient_values['ComorbiditiesExtractor__comor_mld']= 0
+		patient_values['MedicationsExtractor__inp_med_corticosteroids']= 0
+		patient_values['DischargeExtractor__disch_location_cat_home_health']= 0
+		patient_values['MedicationsExtractor__inp_med_anticoagulants']= 0
+		patient_values['ComorbiditiesExtractor__comor_mst']= 0
+		patient_values['MedicationsExtractor__inp_med_misc._antiinfectives']= 0
+		patient_values['DischargeExtractor__disch_location_cat_snf']= 0
+		patient_values['MedicationsExtractor__inp_med_antidiabetic']= 0
+		patient_values['MedicationsExtractor__inp_med_assorted_classes']= 0
+		patient_values['LabResultsExtractor__hosp_low_sodium']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_fluid_elc_dx']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_anemia']= 0
+		patient_values['ComorbiditiesExtractor__comor_pvr']= 0
+		patient_values['ComorbiditiesExtractor__comor_mi']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_diabmel_w_cm']= 0
+		patient_values['LabResultsExtractor__tabak_abnormal_sodium']= 0
+		patient_values['ProceduresExtractor__px_c_section']= 0
+		patient_values['MedicationsExtractor__inp_med_hematopoietic_agents']= 0
+		patient_values['DischargeExtractor__length_of_stay']= 0
+		patient_values['ComorbiditiesExtractor__comor_sld']= 0
+		patient_values['MedicationsExtractor__outp_med_anti-rheumatic']= 0
+		patient_values['PayerExtractor__insurance_type_cat_commercial']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_dysrhythmia']= 0
+		patient_values['LabResultsExtractor__tabak_very_high_bun']= 0
+		patient_values['ProceduresExtractor__px_ot_vasc_cath']= 0
+		patient_values['LabResultsExtractor__hosp_low_hemoglobin']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_ac_renl_fail']= 0
+		patient_values['LabResultsExtractor__tabak_high_bilirubin']= 0
+		patient_values['VitalsExtractor__pulse']= 0
+		patient_values['HealthHistoryExtractor__tobacco_cat_quit']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_htn']= 0
+		patient_values['BasicDemographicsExtractor__marital_status_cat_married']=0
+		patient_values['MedicationsExtractor__inp_med_nutrients']= 0
+		patient_values['MedicationsExtractor__inp_dea_class_C-II']= 0
+		patient_values['MedicationsExtractor__inp_med_fluoroquinolones']= 0
+		patient_values['MedicationsExtractor__inp_med_analgesics-narcotic']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_adlt_resp_fl']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_oth_liver_dx']= 0
+		patient_values['HealthHistoryExtractor__alcohol_cat_no']= 0
+		patient_values['LabResultsExtractor__tabak_high_troponin_or_ckmb']= 0
+		patient_values['LabResultsExtractor__tabak_low_albumin']= 0
+		patient_values['ProceduresExtractor__px_ca_chemorx']= 0
+		patient_values['BasicDemographicsExtractor__marital_status_cat_widowed']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_ot_compl_bir']= 0
+		patient_values['LabResultsExtractor__tabak_abnormal_pco2']= 0
+		patient_values['DischargeExtractor__disch_time_cat_morning']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_oth_low_resp']= 0
+		patient_values['BasicDemographicsExtractor__if_female_bool']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_septicemia']= 0
+		patient_values['HospitalProblemsExtractor__hcup_category_diabmel_no_c']= 0
+		
+		
+		#first tab calculations
 		if int(age)>45:
 				t_age = int(age)-45
 		else:
@@ -291,18 +431,8 @@ def get_prediction():
 			patient_values['BasicDemographicsExtractor__if_female_bool'] = 0
 		
 		
-		#second tab in form
-		admission_type = request.form['admission_type']
-		breathing_problems = request.form.getlist('breathing_problems')	
-		patient_uses = request.form.getlist('patient_uses')
-		insurance = request.form['insurance']
-		three_month_inpatient = str(request.form['three_month_inpatient'])
-		six_month_inpatient = str(request.form['six_month_inpatient'])
-		twelve_month_inpatient = str(request.form['twelve_month_inpatient'])
-		three_month_emergency = str(request.form['three_month_emergency'])
-		six_month_emergency = str(request.form['six_month_emergency'])
-		twelve_month_emergency = str(request.form['twelve_month_emergency'])
 		
+		#second tab calculations		
 		if admission_type == 'elective':
 			patient_values['AdmissionExtractor__admission_type_cat_elective']=1
 			patient_values['AdmissionExtractor__admission_type_cat_emergency']=0
@@ -345,14 +475,12 @@ def get_prediction():
 		patient_values['UtilizationExtractor__pre_3_month_emergency']=three_month_emergency
 		
 		
-		#third tab in form
-		provider_speciality = request.form.getlist('speciality')
-		hospital_problems_count = request.form['hospital_problems_count']
-		hcup_category = request.form.getlist('hcup_category')
+
 		
-		patient_values['ProviderExtractor__specialty_obstetrics_gynecology']=0
-		patient_values['ProviderExtractor__specialty_hospitalist_medical']=0
-		patient_values['ProviderExtractor__specialty_internal_medicine']=0
+		#third tab calculations	
+		#patient_values['ProviderExtractor__specialty_obstetrics_gynecology']=0
+		#patient_values['ProviderExtractor__specialty_hospitalist_medical']=0
+		#patient_values['ProviderExtractor__specialty_internal_medicine']=0
 		for speciality in provider_speciality:
 			patient_values[speciality]=1		
 		patient_values['HospitalProblemsExtractor__hospital_problems_count']=hospital_problems_count		
@@ -375,27 +503,10 @@ def get_prediction():
 		for problem in hcup_category:
 			patient_values[problem]=1
 		
-		#fourth tab in form
-		ccs_category = request.form.getlist('ccs_category')
-		pulse = request.form['pulse']
-		num_total_lab_results = request.form['num_total_lab_results']
-		num_abnormal_results = request.form['num_abnormal_results']
-		tabak_lab_score = request.form['tabak_lab_score']
 		
-		tabak_very_low_albumin = request.form['tabak_very_low_albumin']
-		tabak_high_pt_inr = request.form['tabak_high_pt_inr']
-		tabak_high_bun = request.form['tabak_high_bun']
-		hosp_low_sodium = request.form['hosp_low_sodium']
-		hosp_low_hemoglobin = request.form['hosp_low_hemoglobin']
-		tabak_high_bilirubin = request.form['tabak_high_bilirubin']
-		#tabak_high_troponin_or_ckmb = request.form['tabak_high_troponin_or_ckmb']
-		tabak_high_troponin = request.form['tabak_high_troponin']		
-		tabak_high_troponin_ckmb = request.form['tabak_high_troponin_ckmb']
-		tabak_low_albumin = request.form['tabak_low_albumin']
-		tabak_abnormal_pco2 = request.form['tabak_abnormal_pco2']
-		charlson_index = request.form['charlson_index']
-		comorbid = request.form.getlist('comorbid')
-		
+
+
+		#fourth tab calculations		
 		patient_values['ProceduresExtractor__px_ot_asst_del']=0
 		patient_values['ProceduresExtractor__px_hemodialysis']=0
 		patient_values['ProceduresExtractor__px_ob_lacerat']=0
@@ -524,35 +635,7 @@ def get_prediction():
 		else:
 			patient_values ['DischargeExtractor__disch_time_cat_morning'] = 0	
 		
-		
-		# with open('static/test.csv','wb') as f:
-			# fieldnames = ['UtilizationExtractor__pre_6_month_inpatient','UtilizationExtractor__pre_12_month_inpatient','ComorbiditiesExtractor__charlson_index',
-			# 'ComorbiditiesExtractor__charlson_index_lace','UtilizationExtractor__pre_3_month_inpatient','LabResultsExtractor__num_abnormal_results',
-			# 'LabResultsExtractor__num_total_results','LabResultsExtractor__tabak_lab_score','ComorbiditiesExtractor__comor_ren','ComorbiditiesExtractor__comor_chf',
-			# 'UtilizationExtractor__er_visits_lace','MedicationsExtractor__inp_num_unique_meds','HospitalProblemsExtractor__hospital_problems_count',
-			# 'ProviderExtractor__specialty_obstetrics_gynecology','MedicationsExtractor__inp_num_meds','UtilizationExtractor__pre_6_month_emergency',
-			# 'AdmissionExtractor__admission_type_cat_elective','UtilizationExtractor__pre_12_month_emergency','ComorbiditiesExtractor__comor_cpd,UtilizationExtractor__pre_3_month_emergency',
-			# 'ProviderExtractor__specialty_hospitalist_medical','BasicDemographicsExtractor__age','DischargeExtractor__disch_location_cat_home_no_service','ProceduresExtractor__px_ot_asst_del',
-			# 'LabResultsExtractor__tabak_very_low_albumin','BasicDemographicsExtractor__age^2','HospitalProblemsExtractor__hcup_category_chr_kidney_disease','AdmissionExtractor__acuity_lace',
-			# 'AdmissionExtractor__admission_type_cat_emergency','ComorbiditiesExtractor__comor_mdm','MedicationsExtractor__inp_med_diuretics','DischargeExtractor__length_of_stay_lace',
-			# 'BasicDemographicsExtractor__tabak_age','MedicationsExtractor__inp_med_minerals_&_electrolytes','BasicDemographicsExtractor__age^3','ComorbiditiesExtractor__comor_sdm',
-			# 'HospitalProblemsExtractor__hcup_category_nml_preg_del','EncounterReasonExtractor__problem_breathing','LabResultsExtractor__tabak_high_pt_inr',
-			# 'HospitalProblemsExtractor__hcup_category_chf_nonhp','ProviderExtractor__specialty_internal_medicine','LabResultsExtractor__pct_abnormal_results','ProceduresExtractor__px_hemodialysis',
-			# 'ProceduresExtractor__px_ob_lacerat','ComorbiditiesExtractor__comor_mal','ProceduresExtractor__px_blood_transf','MedicationsExtractor__inp_med_antiasthmatic',
-			# 'PayerExtractor__insurance_type_cat_medicare','HospitalProblemsExtractor__hcup_category_copd','LabResultsExtractor__tabak_high_bun','ComorbiditiesExtractor__comor_mld',
-			# 'MedicationsExtractor__inp_med_corticosteroids','DischargeExtractor__disch_location_cat_home_health','MedicationsExtractor__inp_med_anticoagulants','ComorbiditiesExtractor__comor_mst',
-			# 'MedicationsExtractor__inp_med_misc._antiinfectives','DischargeExtractor__disch_location_cat_snf','MedicationsExtractor__inp_med_antidiabetic',
-			# 'MedicationsExtractor__inp_med_assorted_classes','LabResultsExtractor__hosp_low_sodium','HospitalProblemsExtractor__hcup_category_fluid_elc_dx','HospitalProblemsExtractor__hcup_category_anemia',
-			# 'ComorbiditiesExtractor__comor_pvr','ComorbiditiesExtractor__comor_mi','HospitalProblemsExtractor__hcup_category_diabmel_w_cm','LabResultsExtractor__tabak_abnormal_sodium',
-			# 'ProceduresExtractor__px_c_section','MedicationsExtractor__inp_med_hematopoietic_agents','DischargeExtractor__length_of_stay','ComorbiditiesExtractor__comor_sld',
-			# 'MedicationsExtractor__outp_med_anti-rheumatic','PayerExtractor__insurance_type_cat_commercial','HospitalProblemsExtractor__hcup_category_dysrhythmia','LabResultsExtractor__tabak_very_high_bun',
-			# 'ProceduresExtractor__px_ot_vasc_cath','LabResultsExtractor__hosp_low_hemoglobin','HospitalProblemsExtractor__hcup_category_ac_renl_fail','LabResultsExtractor__tabak_high_bilirubin',
-			# 'VitalsExtractor__pulse','HealthHistoryExtractor__tobacco_cat_quit','HospitalProblemsExtractor__hcup_category_htn','BasicDemographicsExtractor__marital_status_cat_married',
-			# 'MedicationsExtractor__inp_med_nutrients','MedicationsExtractor__inp_dea_class_C-II','MedicationsExtractor__inp_med_fluoroquinolones','MedicationsExtractor__inp_med_analgesics-narcotic',
-			# 'HospitalProblemsExtractor__hcup_category_adlt_resp_fl','HospitalProblemsExtractor__hcup_category_oth_liver_dx','HealthHistoryExtractor__alcohol_cat_no',
-			# 'LabResultsExtractor__tabak_high_troponin_or_ckmb','LabResultsExtractor__tabak_low_albumin','ProceduresExtractor__px_ca_chemorx','BasicDemographicsExtractor__marital_status_cat_widowed',
-			# 'HospitalProblemsExtractor__hcup_category_ot_compl_bir','LabResultsExtractor__tabak_abnormal_pco2','DischargeExtractor__disch_time_cat_morning','HospitalProblemsExtractor__hcup_category_oth_low_resp',
-			# 'BasicDemographicsExtractor__if_female_bool','HospitalProblemsExtractor__hcup_category_septicemia','HospitalProblemsExtractor__hcup_category_diabmel_no_c']
+			
 
 		global timestr
 		timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -562,10 +645,11 @@ def get_prediction():
 			w.writerow(patient_values.values())				
 			
 		global prediction_result
-		prediction_result = prediction_model.getPrediction('static/'+lname+timestr+'prediction_data.csv')
+		#prediction_result = prediction_model.getPrediction('static/'+lname+timestr+'prediction_data.csv')
 			
-		#prediction_result = 9
-		return render_template("prediction_result.html", prediction_result=str(prediction_result))
+		
+			
+		return render_template("prediction_result.html", prediction_result=str(prediction_result)" %")
 	#else:
 	#	return render_template('prediction_form.html')		
 
