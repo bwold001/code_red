@@ -5,6 +5,7 @@ import csv
 from collections import OrderedDict
 import time
 import prediction_model
+import hashlib
 
 app = Flask(__name__)
 global patient_values
@@ -32,6 +33,7 @@ def sign_up():
 			phone = str(request.form['phone_number'])
 			confirm_password = request.form['confirm_password']
 			if password == confirm_password:
+				password = hashlib.sha224(password.encode('utf-8')).hexdigest()
 				insertUser = dbHandler.insertUser(email, password,fname,lname,phone)
 				if insertUser == 1:
 					return render_template('main.html',success=1)
@@ -50,8 +52,8 @@ def sign_in():
 		elif request.form.get('sign_in') == 'sign_in':
 			email = request.form['email']
 			password = request.form['password']
+			password = hashlib.sha224(password.encode('utf-8')).hexdigest()
 			result = dbHandler.getPassword(email)
-			#return (str(result))
 			if len(result) == 0:
 				return render_template('sign_in.html',no_exist=1)
 			correct_password = str(result[0][0])
