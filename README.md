@@ -2,11 +2,16 @@ Software Engineering Project, Spring 2018.
 
 Group Members
 -------------
-Setumdo Ahedor
-Tiffani Buck
-Jimmy Hughes
-Dany Ing
-Bezawit Woldegebriel
+Setumdo Ahedor - Backend
+
+Tiffani Buck - Frontend
+
+Jimmy Hughes - Backend
+
+Dany Ing - Frontend
+
+Bezawit Woldegebriel - Backend
+
 
 Description
 -----------
