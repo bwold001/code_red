@@ -8,7 +8,8 @@ Jimmy Hughes
 Dany Ing
 Bezawit Woldegebriel
 
-
+Description
+-----------
 Whabi is a 30-day all-cause hospital readmissions prediction tool as presented <a href="https://github.com/bayesimpact/readmission-risk">here</a>. 
 
 How to run
